@@ -168,6 +168,9 @@ details summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--sky)}
 .newb{background:var(--rose);color:#fff;border-radius:99px;padding:1px 8px;font-size:11px;margin-left:6px}
 .tip{display:grid;gap:8px;border:2px solid var(--sky);font-size:14px}
 a.btn{text-decoration:none;display:inline-block}
+.feed .log{margin-top:2px}
+.feed .ev.latest{background:var(--sky-soft);border-radius:10px;padding-inline:8px}
+details.card>summary{font-size:13px}
 .pm{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .pm button{width:30px;height:30px;border-radius:50%;border:0;background:var(--card);color:var(--sky);font-weight:800;font-size:16px;box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .pm button:disabled{opacity:.35;cursor:default}
@@ -896,7 +899,7 @@ function choose(o){
 const affordable=o=>!o.locked&&!(o.cost&&S.assets<o.cost);
 
 // ===================== 自動再生 =====================
-let timer=null,speed=2,playing=false,omakase=false;
+let lastPend=null,timer=null,speed=2,playing=false,omakase=false;
 function tick(){
   if(!S){stop();return}
   if(S.pending){if(omakase){const ok=S.pending.opts.filter(affordable),safe=ok.filter(o=>/[ABC]/.test(o.jd||"A"));choose(pick(S.pending.list&&safe.length?safe:ok))}else{stop();render()}return}
@@ -1048,7 +1051,7 @@ function render(){
   if(S.ryunen)chips.push(`留年 <b>${S.ryunen}</b>`);
   const stage=S.phase==="chu"?`${full(S.pref)}の中学${S.year}年`:S.phase==="kosen"?`${S.school} ${deptName()} ${S.year}年${S.sem?"後期":"前期"}`:S.phase==="hs"?"地元の高校":S.phase==="abroad"?`${S.dest}（${S.country}）`:S.phase==="univ"?S.dest:S.phase==="senkou"?`${S.school} 専攻科`:S.retired?"引退後の暮らし":S.job?`${S.job.co}${S.job.title?"・"+S.job.title:""}`:"";
   const dec=S.pending?`<section class="card decision"><span class="label">${esc(S.pending.tag)}${omakase?"（おまかせ中）":""}</span><h3>${esc(S.pending.q)}</h3><div class="choices ${S.pending.list?"scrolllist":""}">${S.pending.opts.map((o,i)=>{const poor=o.cost&&S.assets<o.cost;return`<button class="choice" data-i="${i}" ${o.locked||poor?"disabled":""}><span>${esc(o.l)}</span>${o.jd?`<span class="jd ${o.jc||""}">${o.jd}</span>`:""}${o.s||poor?`<small>${esc(poor?`お金が足りない（所持 ${Math.round(S.assets)}万円）`:o.s)}</small>`:""}</button>`}).join("")}</div></section>`:"";
-  const rows=S.log.map((e,i)=>({e,i})).reverse().slice(0,80);
+  const all=S.log.map((e,i)=>({e,i}));const recent=all.slice(-6);const rows=all.slice(0,-6).reverse().slice(0,80);
   app.innerHTML=`
   <section class="card top">
     <div class="agebar"><span class="age num">${S.age}<small>歳</small></span><span class="stage">${esc(stage)}</span></div>
@@ -1063,14 +1066,16 @@ function render(){
     </div>
   </section>
   ${S.chal?`<p class="chalbar">チャレンジ：<b>${esc(CHAL.find(c=>c[0]===S.chal)[1])}</b></p>`:""}
-  ${!store.get("tip",0)&&S.log.length<12?`<section class="tip card"><p><b>はじめに</b>：「▶ 再生」で人生が自動で進み、決断のときに止まる。下の「力の配分」と「将来の夢」はいつでも変えられる。記録はタップで☆を付けると、最後のカードに残る。</p><button class="pbtn" id="tipx">わかった</button></section>`:""}
+  ${!store.get("tip",0)&&S.log.length<12?`<section class="tip card"><p><b>はじめに</b>：「▶ 再生」で人生が自動で進み、決断のときに止まる。最新の出来事と決断はこの下に並ぶ。「力の配分」と「将来の夢」はいつでも変えられる。記録はタップで☆を付けると、最後のカードに残る。</p><button class="pbtn" id="tipx">わかった</button></section>`:""}
   ${S.log.length<3&&!S.pending?birthHTML():""}
+  <section class="card feed" id="feed"><span class="label">いまの出来事</span><div class="log">${recent.map(({e,i},k)=>`<button class="ev ${e.cls} ${e.star?"star":""} ${k===recent.length-1?"latest":""}" data-li="${i}"><span class="a">${e.a}<br>${e.age}歳</span><p>${e.t}</p><span class="st">★</span></button>`).join("")||'<p class="muted small">「▶ 再生」か「次へ」で人生が進む。</p>'}</div></section>
   ${dec}
   ${dreamHTML()}
   <section class="card">${allocHTML()}<p class="small muted" style="margin-top:6px">${allocHint()}</p></section>
   ${S.log.length>=3||S.pending?birthMini():""}
   <section class="card"><span class="label">人生地図　1マス＝学生は半年、社会人は1年</span>${mapHTML()}</section>
-  <section class="card"><span class="label">人生の記録　タップで☆</span><div class="log">${rows.map(({e,i},k)=>`<button class="ev ${e.cls} ${e.star?"star":""} ${k<2?"new":""}" data-li="${i}"><span class="a">${e.a}<br>${e.age}歳</span><p>${e.t}</p><span class="st">★</span></button>`).join("")||'<p class="muted small">「▶ 再生」か「次へ」で人生が進む。</p>'}</div></section>`;
+  ${rows.length?`<details class="card"><summary>それより前の記録（${all.length-recent.length}件）　タップで☆</summary><div class="log">${rows.map(({e,i},k)=>`<button class="ev ${e.cls} ${e.star?"star":""}" data-li="${i}"><span class="a">${e.a}<br>${e.age}歳</span><p>${e.t}</p><span class="st">★</span></button>`).join("")}</div></details>`:""}`;
+  if(S.pending&&S.pending!==lastPend){lastPend=S.pending;requestAnimationFrame(()=>{const f=document.getElementById("feed"),t=app.querySelector(".top");if(!f)return;const r=f.getBoundingClientRect(),th=t?t.offsetHeight:0;const d=document.querySelector(".decision");const db=d?d.getBoundingClientRect().bottom:r.bottom;if(r.top<th||db>window.innerHeight)window.scrollTo({top:window.scrollY+r.top-th-12,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})})}
   app.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{const o=S.pending.opts[+b.dataset.i];if(!affordable(o))return;choose(o)});
   app.querySelectorAll(".speeds button").forEach(b=>b.onclick=()=>{speed=+b.dataset.s;if(playing)play();else render()});
   app.querySelectorAll(".ev").forEach(b=>b.onclick=()=>{const e=S.log[+b.dataset.li];e.star=!e.star;b.classList.toggle("star")});
