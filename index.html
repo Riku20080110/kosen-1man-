@@ -1,0 +1,1153 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>1万分の1 高専版</title>
+<meta name="description" content="全国58高専の実在の学科から受験先を選び、寮と赤点と部活の5年間、就職、そして最期まで生きる高専生の人生シミュレーション。">
+<meta property="og:title" content="1万分の1 高専版">
+<meta property="og:description" content="どの県に生まれ、どの高専に入り、大企業か中小か、F1か。同じ人生を送る人は1万人中何人？">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px;font-family:system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&family=Zen+Kaku+Gothic+New:wght@400;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: 縦一列の人生プレイヤー。上に再生コントロールとステータス、中央に決断、下に人生地図と記録 */
+:root{
+  --bg:#eaf1f9; --card:#ffffff; --ink:#1d2a3b; --sub:#617089; --line:#d5dfec;
+  --sky:#3d72d6; --sky-soft:#e1ebfb; --sun:#e8962e; --sun-soft:#fcefdc; --rose:#d4506a; --leaf:#3a9a6a;
+  --c-hp:#3a9a6a; --c-joy:#e8962e; --c-know:#3d72d6; --c-rel:#d4506a; --c-old:#8a7bc4;
+  --display:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1622; --card:#172131; --ink:#e3eaf5; --sub:#93a2bb; --line:#26344a;
+  --sky:#7ea6f2; --sky-soft:#1c2b45; --sun:#f0b061; --sun-soft:#3a2b17; --rose:#ef7f95; --leaf:#6cc596;
+  --c-hp:#6cc596; --c-joy:#f0b061; --c-know:#7ea6f2; --c-rel:#ef7f95; --c-old:#ad9fe6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1622; --card:#172131; --ink:#e3eaf5; --sub:#93a2bb; --line:#26344a;
+  --sky:#7ea6f2; --sky-soft:#1c2b45; --sun:#f0b061; --sun-soft:#3a2b17; --rose:#ef7f95; --leaf:#6cc596;
+  --c-hp:#6cc596; --c-joy:#f0b061; --c-know:#7ea6f2; --c-rel:#ef7f95; --c-old:#ad9fe6; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.75;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:680px;margin:0 auto;padding-block:20px 72px;display:grid;gap:14px}
+h1,h2,h3{font-family:var(--display);font-weight:800;margin:0;text-wrap:balance}
+p{margin:0}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--sub)}.small{font-size:13px}
+.label{font-size:12px;color:var(--sub);font-weight:700;letter-spacing:.06em}
+.card{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 1px 0 rgba(29,42,59,.04),0 10px 30px -22px rgba(29,42,59,.35)}
+.btn{background:var(--sky);color:#fff;border:0;border-radius:999px;padding:12px 22px;font-weight:700;font-family:var(--display)}
+.btn:hover{filter:brightness(1.07)}
+.btn.ghost{background:var(--sky-soft);color:var(--sky)}
+.btn.big{width:100%;padding:16px;font-size:18px}
+
+.hero{display:grid;gap:12px;padding:26px 20px}
+.hero h1{font-size:clamp(46px,14vw,84px);line-height:1.05;color:var(--sky)}
+.hero h1 small{display:block;font-size:.26em;color:var(--ink);margin-top:6px}
+.hero .lead{font-size:15px;line-height:1.95;max-width:34em}
+.qblock{display:grid;gap:8px}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.opt{text-align:left;background:var(--bg);border:2px solid transparent;border-radius:14px;padding:10px 12px;display:grid;gap:2px}
+.opt b{font-family:var(--display);font-size:15px}.opt small{color:var(--sub);font-size:12px;line-height:1.45}
+.opt[aria-pressed="true"]{border-color:var(--sky);background:var(--sky-soft)}
+@media (max-width:440px){.opts{grid-template-columns:1fr}}
+
+.birth{display:grid;gap:10px;background:linear-gradient(160deg,var(--sky-soft),var(--card) 60%)}
+.birth .big{font-family:var(--display);font-size:24px;font-weight:800;line-height:1.4}
+.birth dl{display:grid;grid-template-columns:6.5em 1fr;gap:4px 10px;margin:0}
+.birth dt{color:var(--sub);font-size:13px}.birth dd{margin:0;font-weight:700;min-width:0}
+.oneof{font-size:13px;color:var(--sub)}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:grid;gap:10px;padding:12px 14px}
+.agebar{display:flex;align-items:baseline;gap:6px 12px;flex-wrap:wrap}
+.age{font-family:var(--display);font-weight:800;font-size:34px;line-height:1}
+.age small{font-size:15px;margin-left:2px}
+.stage{font-size:13px;color:var(--sub);min-width:0}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.stat{display:grid;gap:3px;min-width:0}
+.stat span{display:flex;justify-content:space-between;font-size:12px;color:var(--sub)}
+.stat span b{color:var(--ink)}
+.bar{height:7px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;transition:width .4s}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:12px;background:var(--bg);border-radius:99px;padding:2px 10px;color:var(--sub)}
+.chip b{color:var(--ink);font-family:var(--mono)}
+.player{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pbtn{border:0;background:var(--sky-soft);color:var(--sky);border-radius:99px;padding:7px 12px;font-weight:700;font-size:13px}
+.pbtn[aria-pressed="true"]{background:var(--sky);color:#fff}
+.pbtn:disabled{opacity:.4;cursor:default}
+.speeds{display:flex;background:var(--bg);border-radius:99px;padding:2px}
+.speeds button{border:0;background:transparent;border-radius:99px;padding:5px 9px;font-size:12px;font-family:var(--mono);color:var(--sub)}
+.speeds button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.toggle{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub);margin-left:auto;border:0;background:none;padding:4px}
+.toggle i{width:34px;height:20px;border-radius:99px;background:var(--line);position:relative;transition:background .2s}
+.toggle i::after{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .2s}
+.toggle[aria-pressed="true"] i{background:var(--sky)}.toggle[aria-pressed="true"] i::after{left:17px}
+
+.decision{border:2px solid var(--sun);display:grid;gap:12px}
+.decision .label{color:var(--sun)}
+.decision h3{font-size:19px;line-height:1.5}
+.choices{display:grid;gap:8px}
+.choice{text-align:left;background:var(--bg);border:2px solid transparent;border-radius:14px;padding:10px 14px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
+.choice:hover:not(:disabled){border-color:var(--sun);background:var(--sun-soft)}
+.choice small{grid-column:1;color:var(--sub);font-size:12px;line-height:1.45}
+.choice .jd{grid-row:1/3;grid-column:2;font-family:var(--display);font-weight:800;font-size:22px;width:40px;text-align:center}
+.choice:disabled{opacity:.45;cursor:not-allowed}
+.jA{color:var(--leaf)}.jB{color:var(--sky)}.jC{color:var(--sun)}.jD,.jE{color:var(--rose)}
+.scrolllist{max-height:380px;overflow:auto;padding-right:4px}
+
+.map{display:grid;grid-template-columns:repeat(auto-fill,minmax(14px,1fr));gap:3px;margin-top:8px}
+.map i{aspect-ratio:1;border-radius:4px;background:var(--line);position:relative}
+.map i.r::after{content:"";position:absolute;inset:28%;border-radius:50%;background:var(--rose)}
+.map i.s::after{content:"";position:absolute;inset:28%;border-radius:50%;background:#fff;opacity:.9}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--sub);margin-top:6px}
+.legend span{display:flex;align-items:center;gap:4px}.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+.log{display:grid;margin-top:6px}
+.ev{display:grid;grid-template-columns:3.6em 1fr 1.4em;gap:8px;padding:9px 2px;border:0;border-bottom:1px solid var(--line);align-items:start;text-align:left;background:none;width:100%}
+.ev .a{font-family:var(--mono);color:var(--sub);font-size:12px;padding-top:3px;line-height:1.3}
+.ev p{min-width:0}
+.ev .st{color:var(--line);font-size:16px;line-height:1.4}
+.ev.star .st{color:var(--sun)}
+.ev.big p{font-weight:700}.ev.red p{color:var(--rose)}.ev.dec p{color:var(--sky)}
+@media (prefers-reduced-motion:no-preference){.ev.new{animation:evin .4s ease-out}}
+@keyframes evin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+.share{display:grid;gap:10px;background:linear-gradient(160deg,#3d72d6,#5a4fcf);color:#fff;border-radius:22px;padding:22px}
+.share .k{font-size:12px;opacity:.85;letter-spacing:.08em}
+.share h2{font-size:clamp(22px,6vw,30px);line-height:1.35}
+.share .n{font-family:var(--display);font-weight:800;font-size:clamp(34px,10vw,52px);line-height:1}
+.share .row{display:flex;flex-wrap:wrap;gap:6px}
+.share .row span{background:rgba(255,255,255,.18);border-radius:99px;padding:2px 10px;font-size:12px}
+.rk{display:inline-block;background:#fff;color:#4a46c4;border-radius:99px;padding:0 10px;font-family:var(--mono);font-size:13px;margin-left:6px;vertical-align:middle}
+.candle{display:flex;align-items:center;gap:10px;font-size:13px;opacity:.9}
+.candle i{width:6px;height:16px;background:#f3e6c8;border-radius:1px;position:relative;display:inline-block}
+.candle i::before{content:"";position:absolute;left:-1px;top:-8px;width:8px;height:8px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:#f6c454;box-shadow:0 0 8px #f6c454}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.facts div{background:var(--bg);border-radius:14px;padding:10px 12px;display:grid}
+.facts span{font-size:12px;color:var(--sub)}.facts b{font-family:var(--display);font-size:17px;line-height:1.4}
+.km{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:6px}
+.km li{display:grid;grid-template-columns:3.6em 1fr auto;gap:8px;font-size:14px;background:var(--bg);border-radius:12px;padding:8px 10px}
+.km .num{font-size:12px;color:var(--sub)}.km .p{font-family:var(--mono);font-size:12px;color:var(--rose);white-space:nowrap}
+.epi{display:grid;gap:4px;border-left:3px solid var(--sky);padding-left:12px;font-size:14px}
+.src{font-size:12px;color:var(--sub);display:grid;gap:4px}.src a{color:var(--sky)}
+details summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--sky)}
+.alloc{display:grid;gap:8px}
+.alloc-head{display:flex;justify-content:space-between;align-items:baseline}
+.alloc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.al{background:var(--bg);border-radius:14px;padding:8px 10px;display:grid;gap:4px;min-width:0}
+.al.off{opacity:.45}
+.al>span{font-size:13px;font-weight:700}
+.dots{display:flex;gap:3px;flex-wrap:wrap}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--sky)}
+.dream{display:grid;gap:10px}
+.dchips{display:flex;flex-wrap:wrap;gap:6px}
+.dchip{border:0;background:var(--bg);border-radius:99px;padding:5px 11px;font-size:13px;color:var(--ink)}
+.dchip[aria-pressed="true"]{background:var(--sun);color:#fff;font-weight:700}
+.dform{display:flex;gap:6px}
+.dform input{flex:1;min-width:0;font:inherit;font-size:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:99px;padding:7px 14px}
+.dform input:focus-visible{outline:2px solid var(--sky)}
+.how{margin:0;padding-left:1.3em;display:grid;gap:6px;font-size:14px}.how b{display:block;font-family:var(--display)}
+.achs{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:6px}
+.ach{border:1px dashed var(--line);border-radius:12px;padding:8px 10px;display:grid;gap:2px;opacity:.6;min-width:0}
+.ach b{font-family:var(--display);font-size:13px}.ach small{font-size:11px;color:var(--sub);line-height:1.4}
+.ach.on{opacity:1;border-style:solid;border-color:var(--sun);background:var(--sun-soft)}
+.ach.ur.on{border-color:#7a5cf0;background:color-mix(in srgb,#7a5cf0 14%,var(--card))}
+.urbox .label{color:#7a5cf0}
+.ach.new{box-shadow:0 0 0 2px var(--sun)}
+.chalbar{font-size:13px;background:var(--sun-soft);border-radius:99px;padding:6px 14px}
+.chalres{font-size:14px;border-radius:12px;padding:8px 12px;background:var(--bg)}.chalres.ok{background:var(--sun-soft)}
+.scorecard{display:grid;gap:12px}.big2{font-family:var(--display);font-size:30px;color:var(--sky)}
+.newb{background:var(--rose);color:#fff;border-radius:99px;padding:1px 8px;font-size:11px;margin-left:6px}
+.tip{display:grid;gap:8px;border:2px solid var(--sky);font-size:14px}
+a.btn{text-decoration:none;display:inline-block}
+.pm{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.pm button{width:30px;height:30px;border-radius:50%;border:0;background:var(--card);color:var(--sky);font-weight:800;font-size:16px;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.pm button:disabled{opacity:.35;cursor:default}
+</style>
+</head>
+<body>
+
+
+<div class="wrap" id="app"></div>
+
+<script>
+// ===================== ユーティリティ =====================
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+let rng=Math.random;const R=()=>rng(),pick=a=>a[Math.floor(R()*a.length)];
+const clamp=(x,a=0,b=100)=>Math.max(a,Math.min(b,x));
+const gauss=()=>{let u=0,v=0;while(!u)u=R();while(!v)v=R();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+function wpick(arr,w){const t=arr.reduce((s,x)=>s+w(x),0);let r=R()*t;for(const x of arr){r-=w(x);if(r<=0)return x}return arr[arr.length-1]}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>a.map(x=>[R(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+
+// ===================== データ =====================
+// 都道府県別の出生数（人口動態統計2024）
+const PREFS=[["北海道",22658],["青森",5099],["岩手",4896],["宮城",11242],["秋田",3282],["山形",4699],["福島",8216],["茨城",13976],["栃木",9262],["群馬",9334],["埼玉",39956],["千葉",33763],["東京",84207],["神奈川",51423],["新潟",9941],["富山",5078],["石川",6078],["福井",4383],["山梨",4153],["長野",10513],["岐阜",9831],["静岡",17439],["愛知",45514],["三重",8896],["滋賀",8795],["京都",12938],["大阪",53351],["兵庫",30535],["奈良",6697],["和歌山",4457],["鳥取",3092],["島根",3622],["岡山",10926],["広島",15765],["山口",6777],["徳島",3547],["香川",5059],["愛媛",6557],["高知",3108],["福岡",32280],["佐賀",4824],["長崎",7000],["熊本",10337],["大分",5957],["宮崎",6000],["鹿児島",8939],["沖縄",11753]];
+const SUF={北海道:"",東京:"都",京都:"府",大阪:"府"};const full=p=>p+(p in SUF?SUF[p]:"県");
+const NO_KOSEN=["埼玉","神奈川","山梨","滋賀"];
+// 学科表記：文字列＝学科、{n,c}＝入学後にコースへ分かれる学科
+const one=(n,c)=>({n,c});
+// [校名, 所在地, 偏差値(目安), 種別, 学科, 校風, 校内の出来事, 名物]
+const SCHOOLS=[
+["明石高専","兵庫",70,"国立",["機械工学科","電気情報工学科","都市システム工学科","建築学科"],"日本標準時子午線の街の高専。偏差値は全国トップクラス。",["明石焼きは地元では「玉子焼」と呼ぶと、友だちに教わった。","明石海峡大橋を見ながら帰った。"]],
+["徳山高専","山口",70,"国立",["機械電気工学科","情報電子工学科","土木建築工学科"],"周南の高専。偏差値は全国トップクラス。",["夜、コンビナートの工場夜景が光っていた。"]],
+["久留米高専","福岡",69,"国立",["機械工学科","電気電子工学科","制御情報工学科","生物応用化学科","材料システム工学科"],"筑後の高専。",["久留米ラーメンの店を開拓した。"]],
+["群馬高専","群馬",69,"国立",["機械工学科","電子メディア工学科","電子情報工学科","物質工学科","環境都市工学科"],"前橋の高専。冬はからっ風が強い。",["からっ風で、自転車が横に流された。"]],
+["奈良高専","奈良",69,"国立",["機械工学科","電気工学科","電子制御工学科","情報工学科","物質化学工学科"],"大和郡山の高専。ロボコンの強豪。",["金魚の町。通学路の店先に金魚の水槽が並んでいた。","部室に、過去のロボコン全国大会のトロフィーが並んでいる。"],{robo:2.5}],
+["熊本高専","熊本",69,"国立",["情報通信エレクトロニクス工学科","制御情報システム工学科","人間情報システム工学科","機械知能システム工学科","建築社会デザイン工学科","生物化学システム工学科"],"熊本と八代、2つのキャンパス。ロボコンの強豪。",["もう一方のキャンパスとの合同行事で盛り上がった。","ロボコン部の先輩は、全国大会の常連だった。"],{robo:2.5}],
+["大分高専","大分",69,"国立",["機械工学科","電気電子工学科","情報工学科","都市・環境工学科"],"温泉県の高専。",["試験明けに、別府の温泉に浸かった。"]],
+["佐世保高専","長崎",68,"国立",["機械制御工学科","電気電子工学科","情報知能工学科","化学・生物工学科"],"港と造船の街の高専。",["九十九島の遊覧船に乗った。"]],
+["石川高専","石川",68,"国立",["機械工学科","電気工学科","電子情報工学科","環境都市工学科","建築学科"],"津幡の高専。金沢にも近い。",["金沢の21世紀美術館に行った。"]],
+["岐阜高専","岐阜",68,"国立",["機械工学科","電気情報工学科","電子制御工学科","環境都市工学科","建築学科"],"本巣の高専。",["長良川の鵜飼を見に行った。"]],
+["鈴鹿高専","三重",68,"国立",["機械工学科","電気電子工学科","電子情報工学科","生物応用化学科","材料工学科"],"サーキットの街の高専。",["F1の週、町じゅうにエンジン音が響いた。"]],
+["鹿児島高専","鹿児島",68,"国立",["機械工学科","電子制御工学科","情報工学科","電気電子工学科","都市環境デザイン工学科"],"霧島市の高専。桜島の灰が降る日もある。",["桜島の灰で、洗濯物が灰色になった。"]],
+["北九州高専","福岡",67,"国立",[one("生産デザイン工学科",["機械創造システムコース","知能ロボットシステムコース","電気電子コース","情報システムコース","物質化学コース"])],"ものづくりの街・北九州の高専。",["製鉄所の夜景を見に行った。"]],
+["沼津高専","静岡",67,"国立",["機械工学科","電気電子工学科","電子制御工学科","制御情報工学科","物質工学科"],"富士山が見える高専。",["校舎から見える富士山に、もう誰も驚かなくなった。"]],
+["和歌山高専","和歌山",67,"国立",["知能機械工学科","電気情報工学科","生物応用化学科","環境都市工学科"],"御坊の高専。海と山に近い。",["近所のみかん畑で収穫を手伝った。"]],
+["仙台高専","宮城",66,"国立",[one("総合工学科",["情報システムコース","情報通信コース","知能エレクトロニクスコース","電気電子コース","マテリアルコース","機械システムコース","情報と創造コース","建築デザインコース"])],"広瀬と名取、2つのキャンパスがある。",["牛タン定食を食べに、仙台駅まで出た。"]],
+["長野高専","長野",66,"国立",[one("工学科",["電気コース（情報エレクトロニクス系）","情報コース（情報エレクトロニクス系）","機械ロボティクス系","都市デザイン系"])],"山に囲まれた長野市の高専。",["冬、教室の窓から雪をかぶった山並みが見えた。"]],
+["八戸高専","青森",66,"国立",[one("産業システム工学科",["機械・医工学コース","電気情報工学コース","マテリアル・バイオ工学コース","環境都市・建築デザインコース"])],"港町の高専。医工学を学べるコースがある。",["朝市で、せんべい汁を食べた。"]],
+["福島高専","福島",66,"国立",["機械システム工学科","電気電子システム工学科","化学・バイオ工学科","都市システム工学科","ビジネスコミュニケーション学科"],"いわきの高専。工学科と並んでビジネス系の学科がある。",["ビジネスコミュニケーション学科の友だちに、プレゼンの作り方を教わった。","夏、いわきの海で泳いだ。"]],
+["茨城高専","茨城",66,"国立",[one("国際創造工学科",["機械・制御系","電気・電子系","情報系","化学・生物・環境系"])],"ひたちなかの高専。国際交流に力を入れている。",["留学生と英語で共同プロジェクトをした。","海浜公園のネモフィラを見に行った。"]],
+["呉高専","広島",66,"国立",["機械工学科","電気情報工学科","環境都市工学科","建築学科"],"造船の街・呉の高専。",["大和ミュージアムで戦艦大和の模型を見た。"]],
+["函館高専","北海道",66,"国立",["生産システム工学科","物質環境工学科","社会基盤工学科"],"函館山のふもと。冬の坂道は凍る。",["冬、学校までの坂でスリップする人が続出した。","学祭のあと、函館山の夜景を見に行った。"]],
+["富山高専","富山",66,"国立",["機械システム工学科","電気制御システム工学科","物質化学工学科","電子情報工学科","国際ビジネス学科","商船学科"],"本郷と射水、2つのキャンパス。商船学科もある。",["教室の窓から、立山連峰がきれいに見えた。"]],
+["東京高専","東京",65,"国立",["機械工学科","電気工学科","電子工学科","情報工学科","物質工学科"],"八王子の高専。",["高尾山に登って、遠くの都心を眺めた。"]],
+["神戸市立高専","兵庫",65,"公立",["機械工学科","電気工学科","電子工学科","応用化学科","都市工学科"],"神戸市西区の学園都市にある公立高専。",["学園都市の駅前で、大学生に混じって昼ご飯を食べた。"],{club:"ソーラーカー部",s:"太陽光で走る車を自作する",join:"ソーラーカー部に入った。部室にはソーラーパネルと工具が積まれている。",buy:["高効率の太陽電池セルを買い足す",6],season:["ソーラーカーレースで、雲が出た瞬間に速度が半分になった。","モーターの効率を0.5%上げるのに、半年かかった。","耐久レースを完走した。"],big:{t:"ソーラーカーレースで入賞",p:.06,log:"ソーラーカーの耐久レースで入賞した。"},kind:"tech"}],
+["苫小牧高専","北海道",65,"国立",[one("創造工学科",["機械系","都市・環境系","応用化学・生物系","電気電子系","情報科学・工学系"])],"工場の煙突が見える、工業港の町の高専。",["冬は風が強く、自転車が進まない。"]],
+["大阪公立大学高専","大阪",65,"公立",[one("総合工学システム学科",["エネルギー機械コース","プロダクトデザインコース","エレクトロニクスコース","知能情報コース"])],"寝屋川にある、大阪公立大学の高専。",["大阪公立大学のキャンパスを見学した。"]],
+["豊田高専","愛知",65,"国立",["機械工学科","電気・電子システム工学科","情報工学科","環境都市工学科","建築学科"],"自動車産業の街の高専。",["工場見学で、車が1分に1台できていくのを見た。"]],
+["都城高専","宮崎",65,"国立",["機械工学科","電気情報工学科","物質工学科","建築学科"],"霧島連山を望む高専。",["霧島の山並みが、校舎からよく見えた。"]],
+["有明高専","福岡",64,"国立",[one("創造工学科",["エネルギーコース","応用化学コース","環境生命コース","メカニクスコース","情報システムコース","建築コース"])],"炭鉱の歴史がある大牟田の高専。",["三池炭鉱の跡を見学した。"]],
+["木更津高専","千葉",64,"国立",["機械工学科","電気電子工学科","電子制御工学科","情報工学科","環境都市工学科"],"アクアラインの千葉側にある高専。",["高速バスでアクアラインを渡って東京へ行った。"]],
+["小山高専","栃木",64,"国立",["機械工学科","電気電子創造工学科","物質工学科","建築学科"],"新幹線で東京へも出やすい小山の高専。",["新幹線で東京の展示会を見に行った。"]],
+["阿南高専","徳島",64,"国立",[one("創造技術工学科",["機械コース","電気コース","情報コース","建設コース","化学コース"])],"徳島・阿南の海沿いの高専。",["近くの海でサーフィンをしている先輩がいた。"]],
+["香川高専","香川",64,"国立",["機械工学科","電気情報工学科","機械電子工学科","建設環境工学科","通信ネットワーク工学科","電子システム工学科","情報工学科"],"高松と詫間、2つのキャンパス。ロボコンの強豪。",["うどん屋のはしごをした。1日で4杯。","ロボコン部の練習場は、夜遅くまで明かりがついている。"],{robo:2.5}],
+["釧路高専","北海道",63,"国立",[one("創造工学科",["スマートメカニクスコース","エレクトロニクスコース","建築デザインコース"])],"霧の町の高専。夏でも肌寒い。",["夏なのに霧で校舎が見えなかった。"]],
+["旭川高専","北海道",63,"国立",["機械システム工学科","電気情報工学科","システム制御情報工学科","物質化学工学科"],"冬は氷点下20度を下回る日もある。",["朝、まつ毛が凍った。","冬の体育はスキーだった。"]],
+["福井高専","福井",63,"国立",["機械工学科","電気電子工学科","電子情報工学科","物質工学科","環境都市工学科"],"眼鏡の町・鯖江の高専。",["地元の眼鏡工場を見学した。","恐竜博物館に行った。"]],
+["舞鶴高専","京都",63,"国立",["機械工学科","電気情報工学科","電子制御工学科","建設システム工学科"],"港町・舞鶴の高専。",["赤れんが倉庫の前で写真を撮った。","港に護衛艦が並んでいた。"]],
+["新居浜高専","愛媛",63,"国立",["機械工学科","電気情報工学科","電子制御工学科","生物応用化学科","環境材料工学科"],"別子銅山で栄えた工業の街の高専。",["別子銅山の跡を見学した。"]],
+["沖縄高専","沖縄",63,"国立",["機械システム工学科","情報通信システム工学科","メディア情報工学科","生物資源工学科"],"やんばるの入り口、名護の高専。",["授業のあと、海まで歩いて行った。","寮のゴーヤーチャンプルーが好きになった。"]],
+["一関高専","岩手",62,"国立",[one("未来創造工学科",["機械・知能系","電気・電子系","情報・ソフトウェア系","化学・バイオ系"])],"岩手の南、田園の中の高専。",["田んぼの中の道を自転車で通った。"]],
+["秋田高専","秋田",62,"国立",[one("創造システム工学科",["機械系","電気・電子・情報系","物質・生物系","土木・建築系"])],"雪国の高専。冬は除雪から一日が始まる。",["除雪当番で、朝から1時間雪かきをした。","竿燈まつりを見に行った。"]],
+["松江高専","島根",62,"国立",["機械工学科","電気情報工学科","電子制御工学科","情報工学科","環境・建設工学科"],"宍道湖のほとりの城下町の高専。",["宍道湖の夕日を見に行った。"]],
+["宇部高専","山口",62,"国立",["機械工学科","電気工学科","制御情報工学科","物質工学科","経営情報学科"],"宇部の高専。経営情報学科がある。",["経営情報学科の友だちと、高専祭の模擬店の収支を計算した。"]],
+["東京都立産業技術高専","東京",61,"公立",[one("ものづくり工学科",["機械システム工学コース","AIスマート工学コース","電気電子エネルギー工学コース","情報システム工学コース","情報通信工学コース","ロボット工学コース","航空宇宙工学コース","医療福祉工学コース"])],"品川と荒川、2つのキャンパス。航空宇宙工学コースがある。",["航空技術者を目指す学生が、同じ学年に何人もいた。"],{club:"鳥人間チーム",s:"人力飛行機で琵琶湖を飛ぶ",join:"鳥人間チームに入った。翼の骨組みはカーボンと発泡材でできている。",buy:["翼用のカーボンパイプを買い足す",5],season:["琵琶湖の書類審査に落ちた。来年こそ。","テスト飛行で、機体が3メートルだけ浮いた。","翼を一枚作るのに、夏休みが全部消えた。"],big:{t:"鳥人間コンテストに出場",p:.05,log:"鳥人間コンテストの書類審査を通り、琵琶湖のプラットホームから飛んだ。"},kind:"tech"}],
+["長岡高専","新潟",61,"国立",["機械工学科","電気電子システム工学科","電子制御工学科","物質工学科","環境都市工学科"],"雪国・長岡の高専。近くに長岡技術科学大学がある。",["長岡まつりの花火を見た。","技科大の研究室を見学した。"]],
+["津山高専","岡山",61,"国立",[one("総合理工学科",["先進科学系","機械システム系","電気電子システム系","情報システム系"])],"岡山北部の城下町の高専。",["津山城の桜が満開だった。"]],
+["高知高専","高知",61,"国立",[one("ソーシャルデザイン工学科",["エネルギー・環境コース","ロボティクスコース","情報セキュリティコース","まちづくり・防災コース","新素材・生命コース"])],"南国・高知の高専。防災を学べるコースがある。",["よさこい祭りの踊りを見に行った。"]],
+["鶴岡高専","山形",60,"国立",[one("創造工学科",["機械コース","電気・電子コース","情報コース","化学・生物コース"])],"庄内平野の高専。月山が見える。",["田んぼの向こうに月山が見えた。","だだちゃ豆の季節になった。"]],
+["米子高専","鳥取",60,"国立",[one("総合工学科",["機械システムコース","電気電子コース","情報システムコース","化学・バイオコース","建築デザインコース"])],"大山のふもとの高専。",["大山（だいせん）に登った。"]],
+["近畿大学高専","三重",58,"私立",[one("総合システム工学科",["機械システムコース","電気電子コース","制御情報コース","都市環境コース"])],"名張の私立高専。強化クラブがある。",["地域の秋祭りで、神輿を担いだ。"],{club:"硬式野球部",s:"高専なのに高校野球の大会に出る。甲子園を目指す",join:"硬式野球部に入った。高専で甲子園を目指す、珍しいチームだ。",buy:["遠征合宿に参加する",5],season:["夏の三重大会。初戦を突破した。","秋季大会。強豪私立に競り負けた。","練習のあと、寮で材料力学のレポートを書いた。"],big:{t:"夏の三重大会で決勝に進出",p:.03,log:"夏の三重大会で決勝まで勝ち上がった。あと1勝で甲子園だった。"},kind:"sport"}],
+["大島商船高専","山口",58,"国立",["商船学科","電子機械工学科","情報工学科"],"周防大島の、島の高専。",["橋を渡って島から本土へ出た。","みかん畑の間を通学した。"],"cutter"],
+["広島商船高専","広島",55,"国立",["商船学科",one("総合科学科",["電気情報システム系","流通情報マネジメント系"])],"大崎上島の、島の高専。",["フェリーで島を出て、竹原で買い物をした。"],"cutter"],
+["弓削商船高専","愛媛",53,"国立",["商船学科","電子機械工学科","情報工学科"],"瀬戸内海の、島の高専。",["フェリーの時刻に合わせて、生活が回っている。"],"cutter"],
+["サレジオ高専","東京",52,"私立",["デザイン学科","電気工学科","機械電子工学科","情報工学科"],"町田の私立高専。デザイン学科がある。",["デザイン学科の講評会を見学した。ポスターが壁一面に並んでいた。"]],
+["鳥羽商船高専","三重",52,"国立",["商船学科","情報機械システム工学科"],"伊勢志摩の、海の高専。",["伊勢神宮まで自転車で行った。"],"cutter"],
+["国際高専","石川",49,"私立",["国際理工学科"],"授業の多くが英語。1・2年は白山麓のキャンパスで全寮制。",["数学の用語を、日本語で言えなくなってきた。","寮の周りは、山と雪だけだった。","寮の同室は留学生だった。"],{dorm:1}],
+["神山まるごと高専","徳島",0,"私立",["デザイン・エンジニアリング学科"],"徳島の山あいにある全寮制の高専。起業家の育成を掲げる。",["授業に、起業家がゲストで来る。","山あいの寮から、毎朝棚田が見えた。","1年生でビジネスプランのピッチをした。"],{dorm:1,kigyo:8}]
+];
+const CUTTER={club:"カッター部",s:"12人で漕ぐ手漕ぎボート。商船高専の伝統",join:"カッター部に入った。オールは想像の3倍重い。",buy:["夏合宿に参加する",4],season:["早朝の海でカッターを漕いだ。手のひらの豆がつぶれた。","商船高専の漕艇大会。あと艇身ひとつ届かなかった。","練習船が港に入ってくるのを、オールを止めて見た。"],big:{t:"商船高専の漕艇大会で優勝",p:.08,log:"商船高専の漕艇大会で優勝した。港で先輩たちが待っていた。"},kind:"sport"};
+SCHOOLS.forEach(s=>{if(s[7]==="cutter")s[7]=CUTTER});
+const PUB_P={"東京都立産業技術高専":.03,"大阪公立大学高専":.015,"神戸市立高専":.02};
+const sch=n=>SCHOOLS.find(s=>s[0]===n);
+// 学科名から系統を判定
+function code(n){
+  if(/商船/.test(n))return"S";if(/ビジネス|経営|流通|コミュニケーション学科|マネジメント/.test(n))return"B";
+  if(/^デザイン学科|デザイン・エンジニアリング|プロダクトデザイン/.test(n))return"X";if(/国際理工/.test(n))return"J";
+  if(/医療福祉|医工/.test(n))return"M";if(/建築(?!社会)|建築デザイン/.test(n)&&!/土木/.test(n))return"A";
+  if(/都市|建設|社会基盤|土木|まちづくり|環境・建設|建築社会/.test(n))return"D";
+  if(/化学|物質|生物|バイオ|材料|マテリアル|新素材|先進科学|環境生命|生命/.test(n))return"C";
+  if(/情報|通信|メディア|ソフトウェア|AI|セキュリティ/.test(n))return"J";
+  if(/電気|電子|エレクトロ|エネルギー/.test(n))return"E";return"M"}
+const CODE={
+  M:{fem:.10,subj:["材料力学","熱力学","流体力学","機械力学","機械製図"],desc:"機械・ロボット・ものづくり",lic:"CAD利用技術者",labs:["流体工学研究室","材料強度研究室","ロボティクス研究室","熱工学研究室"],fl:["実習工場で、旋盤の切りくずが靴に入った。","製図の課題で、線の太さを3回直された。"]},
+  E:{fem:.12,subj:["電気回路","電磁気学","電子回路","制御工学","電気機器"],desc:"電気・電子・制御",lic:"第二種電気工事士",labs:["パワエレ研究室","通信工学研究室","半導体研究室","制御工学研究室"],fl:["はんだ付けの実習で、指を軽くやけどした。","電験三種の話題で、先輩が熱くなっていた。"]},
+  J:{fem:.22,subj:["プログラミング","アルゴリズム","離散数学","計算機アーキテクチャ","OS"],desc:"プログラミングとコンピュータ",lic:"基本情報技術者",labs:["機械学習研究室","ネットワーク研究室","画像処理研究室","組込み研究室"],fl:["課題のプログラムが、締切5分前にやっと動いた。","競技プログラミングのレートが少し上がった。"]},
+  C:{fem:.42,subj:["有機化学","物理化学","分析化学","化学工学","生物工学"],desc:"化学・バイオ・材料",lic:"危険物取扱者 乙種4類",labs:["有機合成研究室","触媒化学研究室","生物化学研究室","高分子研究室"],fl:["実験の白衣に、薬品の黄色いしみができた。","滴定の終点を3回通り過ぎた。"]},
+  D:{fem:.30,subj:["構造力学","水理学","土質力学","測量学","コンクリート工学"],desc:"橋・道路・防災",lic:"2級土木施工管理（一次）",labs:["橋梁工学研究室","防災水工学研究室","地盤工学研究室","都市計画研究室"],fl:["測量実習で、炎天下に一日中トータルステーションを覗いた。","コンクリートの供試体を割る実験をした。"]},
+  A:{fem:.45,subj:["建築構造力学","建築計画","設計製図","建築環境工学","建築史"],desc:"建物の設計と構造",lic:"福祉住環境コーディネーター",labs:["建築計画研究室","建築構造研究室","建築環境研究室","まちづくり研究室"],fl:["設計製図の課題で、模型を作りながら朝を迎えた。","講評会で、自分の図面に赤ペンが入った。"]},
+  S:{fem:.18,subj:["航海学","機関学","海事法規","船舶工学","海洋気象"],desc:"船乗りになる。長期の乗船実習つき",lic:"海技士の筆記",labs:["航海情報研究室","舶用機関研究室","海事政策研究室"],fl:["ロープワークの試験で、もやい結びを10秒で結んだ。","練習船での実習。船酔いは3日目に治った。"]},
+  B:{fem:.55,subj:["簿記","経営学","マーケティング","経済学","情報処理"],desc:"経営・ビジネスと情報",lic:"日商簿記2級",labs:["経営戦略研究室","マーケティング研究室","会計情報研究室"],fl:["簿記の仕訳で、貸方と借方を逆に書いた。","地元企業と組んで、商品の販売企画を考えた。"]},
+  X:{fem:.50,subj:["デザイン演習","色彩学","造形","CG","プロダクトデザイン"],desc:"デザインとものづくり",lic:"色彩検定2級",labs:["プロダクトデザイン研究室","UIデザイン研究室","グラフィック研究室"],fl:["講評会で、作品の意図を3分で説明した。","スケッチブックが1か月で1冊なくなった。"]}
+};
+const SUBJ_LOW=["微分積分","線形代数","物理","英語","国語","化学"],SUBJ_HIGH=["応用数学","応用物理","英語"];
+const SURNAME=["佐藤","鈴木","高橋","田中","伊藤","渡辺","山本","中村","小林","加藤","吉田","山田","松本","井上","木村","林","清水","山崎","森","池田","橋本","阿部","石川","前田"];
+const UNIVS=[["東京大学",93],["京都大学",91],["東京科学大学",86],["大阪大学",82],["東北大学",77],["名古屋大学",77],["九州大学",74],["北海道大学",72],["神戸大学",70],["筑波大学",67],["千葉大学",64],["東京都立大学",62],["広島大学",62],["熊本大学",57],["埼玉大学",56],["信州大学",54]];
+const GIKADAI=["長岡技術科学大学","豊橋技術科学大学"];
+const BIGCO={M:["大手自動車メーカー","大手重工メーカー","大手精密機器メーカー"],E:["大手電機メーカー","電力会社","大手鉄道会社"],J:["大手通信会社","大手電機メーカー","大手SIer"],C:["大手化学メーカー","大手製薬会社","大手食品メーカー"],D:["大手ゼネコン","高速道路会社","大手鉄道会社"],A:["大手ハウスメーカー","大手ゼネコン"],S:["大手海運会社"],B:["大手商社","大手銀行","大手メーカーの営業部門"],X:["大手家電メーカーのデザイン部門","大手広告会社"]};
+const SMALLCO={M:["地元の金型メーカー（従業員60人）","地元の部品メーカー（従業員120人）","産業機械の町工場（従業員25人）"],E:["地元の設備工事会社（従業員80人）","制御盤メーカー（従業員45人）"],J:["地方の受託開発会社（従業員30人）","地元のシステム会社（従業員70人）"],C:["地元の塗料メーカー（従業員90人）","食品工場（従業員150人）"],D:["地元の建設会社（従業員50人）","測量設計事務所（従業員20人）"],A:["地元の工務店（従業員15人）","設計事務所（従業員8人）"],S:["内航海運の会社（従業員40人）"],B:["地元の商社（従業員60人）","地元の信用金庫"],X:["デザイン事務所（従業員10人）","地元の印刷会社（従業員40人）"]};
+const ROLE={M:["設計","生産技術"],E:["電気設計","設備保全"],J:["システムエンジニア","組込みエンジニア"],C:["品質管理","プロセス開発"],D:["施工管理","設計"],A:["設計","施工管理"],S:["航海士","機関士"],B:["営業","経理"],X:["プロダクトデザイナー","UIデザイナー"]};
+const BASE={big:330,small:280,venture:310,pub:290,own:300,f1:620,acad:420,pro:1500};
+// UR人生：とても細い道。たどり着くと、それだけで1万分の1を切る
+const URS=[
+  ["f1","F1エンジニア","夢はモータースポーツ。英語と技術を極め、海を渡れ"],
+  ["astro","宇宙飛行士","空と宇宙を夢見る技術者に、十数年に一度の募集が来る。体力と英語が要る"],
+  ["abu","ABUロボコン世界一","まずは高専ロボコンの頂点へ。その先にアジア太平洋の舞台がある"],
+  ["ipo","創業した会社を上場","在学中に何かを作り、起業の道を選べ。高専DCONが近道"],
+  ["antarctic","南極で越冬","技術と体力のある技術者に、ある日、極地から声がかかる"],
+  ["npb","高専からプロ野球","名張の高専で白球を追え"],
+  ["captain","外航船の船長","商船学科から海運会社へ。長い航海の先に"],
+  ["prof","世界的な科学賞","夢は研究者。博士課程に進み、教授を目指せ"],
+  ["lotto","宝くじ1等","運だけ"]
+];
+function urNote(id,t){note(t,.00004);S.ur=S.ur||[];if(!S.ur.includes(id))S.ur.push(id)}
+// 将来の夢（工学の業界）。fit＝相性のよい学科系統、club＝相性のよい部活
+const DREAMS={
+  motor:{n:"モータースポーツ・F1",re:/F1|エフワン|レース|モータースポーツ|フォーミュラ/,fit:"ME",club:["robo","special"],big:["大手自動車メーカーのモータースポーツ部門"],small:["国内のレーシングチーム（従業員40人）"],role:"レースエンジニア",fl:["深夜、ヨーロッパのF1中継を最後まで見た。","鈴鹿サーキットの観客席で、エンジン音に鳥肌が立った。"]},
+  auto:{n:"自動車",re:/自動車|クルマ|車|EV|モビリティ/,fit:"MEJ",club:["robo","special"],big:["大手自動車メーカー"],small:["自動車部品メーカー（従業員200人）"],role:"車両開発エンジニア",fl:["モーターショーに行った。"]},
+  aero:{n:"航空・宇宙",re:/航空|宇宙|飛行機|ロケット|衛星|ドローン/,fit:"MEJ",club:["special","robo"],big:["大手重工メーカーの航空宇宙部門","宇宙航空研究開発機構（JAXA）"],small:["小型衛星のベンチャー（従業員30人）"],role:"航空宇宙エンジニア",fl:["ロケットの打ち上げ中継を見た。","航空祭でブルーインパルスを見上げた。"]},
+  robot:{n:"ロボット",re:/ロボ|自動化|FA|メカトロ/,fit:"MEJ",club:["robo"],big:["大手産業用ロボットメーカー"],small:["ロボットベンチャー（従業員25人）"],role:"ロボットエンジニア",fl:["ロボット展示会で、溶接ロボットの動きに見入った。"]},
+  semi:{n:"半導体・電子",re:/半導体|電子|チップ|デバイス/,fit:"EJC",club:["robo","procon"],big:["大手半導体メーカー"],small:["半導体装置の部品メーカー（従業員90人）"],role:"プロセスエンジニア",fl:["半導体工場のクリーンルームの映像を見た。"]},
+  energy:{n:"エネルギー・電力",re:/エネルギー|電力|発電|原子力|再エネ|太陽|水素/,fit:"EMC",club:["special"],big:["電力会社","大手重工メーカーのエネルギー部門"],small:["地域の新電力会社（従業員30人）"],role:"発電設備エンジニア",fl:["風力発電の風車を近くで見た。羽根は思ったより大きかった。"]},
+  rail:{n:"鉄道",re:/鉄道|電車|新幹線|リニア/,fit:"EMD",club:["culture"],big:["大手鉄道会社"],small:["鉄道車両の部品メーカー（従業員70人）"],role:"車両・設備エンジニア",fl:["新幹線の車両基地の公開日に行った。"]},
+  infra:{n:"建設・インフラ",re:/建設|インフラ|橋|道路|土木|ダム|防災|トンネル/,fit:"DA",club:[],big:["大手ゼネコン","高速道路会社"],small:["地元の建設会社（従業員50人）"],role:"施工管理・設計",fl:["大きな橋の架設現場を見学した。"]},
+  arch:{n:"建築・住宅",re:/建築|住宅|家|インテリア/,fit:"AD",club:[],big:["大手ハウスメーカー","大手設計事務所"],small:["地元の工務店（従業員15人）"],role:"建築設計",fl:["有名な建築家の建物を見に、遠くまで行った。"]},
+  chem:{n:"化学・素材",re:/化学|素材|材料|化粧品|食品/,fit:"C",club:[],big:["大手化学メーカー"],small:["地元の塗料メーカー（従業員90人）"],role:"材料開発",fl:["新素材の展示会で、透明な木材を見た。"]},
+  bio:{n:"医薬・バイオ・医療機器",re:/医|薬|バイオ|生命|医療|福祉/,fit:"CEM",club:[],big:["大手製薬会社","大手医療機器メーカー"],small:["医療機器のベンチャー（従業員40人）"],role:"開発エンジニア",fl:["病院で使われている検査装置の仕組みを調べた。"]},
+  it:{n:"IT・AI",re:/IT|AI|人工知能|ソフト|プログラ|アプリ|ウェブ|Web|セキュリティ|データ/,fit:"JB",club:["procon"],big:["大手IT企業","大手通信会社"],small:["地方の受託開発会社（従業員30人）"],role:"ソフトウェアエンジニア",fl:["生成AIのニュースを毎朝チェックした。"]},
+  game:{n:"ゲーム・エンタメ",re:/ゲーム|アニメ|映像|エンタメ|音楽|VR/,fit:"JX",club:["procon","culture"],big:["大手ゲーム会社"],small:["インディーゲームの開発会社（従業員12人）"],role:"ゲームプログラマー",fl:["好きなゲームのスタッフロールを最後まで見た。"]},
+  ship:{n:"船・海運",re:/船|海運|海|港|造船/,fit:"SMD",club:["special"],big:["大手海運会社","大手造船会社"],small:["内航海運の会社（従業員40人）"],role:"船舶エンジニア",fl:["港で大きなコンテナ船を見上げた。"]},
+  research:{n:"研究者",re:/研究|博士|大学教員|学者/,fit:"MEJCDASBX",club:[],big:["国立研究開発法人"],small:["大学の研究室"],role:"研究員",fl:["研究者が書いた一般向けの本を読んだ。"]},
+  startup:{n:"起業",re:/起業|社長|スタートアップ|会社をつく/,fit:"MEJCDASBX",club:["procon"],big:["自分の会社"],small:["自分の会社"],role:"代表取締役",fl:["起業家のインタビュー記事を読みあさった。"]}
+};
+function dreamKeyFromText(t){for(const k in DREAMS)if(DREAMS[k].re.test(t))return k;return null}
+const dreamName=()=>S.dream?(S.dreamText||DREAMS[S.dream].n):"まだない";
+function setDream(k,text){if(S.dream&&S.dream!==k)S.dp=Math.round(S.dp*.5);S.dream=k;S.dreamText=text||"";S.dreamHist=(S.dreamHist||[]);S.dreamHist.push(`${S.age}歳：${dreamName()}`)}
+
+
+// ===================== 力の配分 =====================
+const ALLOC={
+  chu:{total:6,keys:[["study","勉強"],["club","部活"],["play","遊び"],["rest","休養"]],def:{study:2,club:2,play:1,rest:1}},
+  kosen:{total:8,keys:[["study","勉強"],["club","部活"],["work","バイト"],["play","遊び"],["rest","休養"]],def:{study:2,club:2,work:1,play:2,rest:1}},
+  univ:{total:8,keys:[["study","勉強・研究"],["work","バイト"],["play","遊び"],["rest","休養"]],def:{study:4,work:1,play:2,rest:1}},
+  work:{total:8,keys:[["job","仕事"],["family","家族・恋愛"],["hobby","趣味"],["rest","健康"]],def:{job:4,family:2,hobby:1,rest:1}},
+  old:{total:6,keys:[["hobby","趣味"],["family","家族"],["rest","健康"]],def:{hobby:2,family:2,rest:2}}
+};
+function allocKey(){return S.phase==="chu"?"chu":S.phase==="kosen"?"kosen":["hs","univ","senkou","abroad"].includes(S.phase)?"univ":S.retired?"old":"work"}
+function syncAlloc(){const k=allocKey();if(S.allocK!==k){S.allocK=k;S.alloc={...ALLOC[k].def}}}
+function used(){return Object.values(S.alloc).reduce((a,b)=>a+b,0)}
+function dreamGain(){
+  if(!S.dream)return;const D=DREAMS[S.dream];let g=1;
+  if(S.phase==="kosen"){g+=1;if(D&&D.club.includes(S.club))g+=2.5;if(D&&D.fit.includes(S.dc))g+=1}
+  if(S.phase==="work"&&S.job&&S.job.ind===S.dream)g+=2;
+  if(["univ","abroad","senkou"].includes(S.phase))g+=1.5;
+  S.dp=clamp(S.dp+g);
+}
+function applyAlloc(){
+  syncAlloc();const a=S.alloc,k=S.allocK;dreamGain();
+  if(k==="kosen"||k==="univ")add("eng",(a.study||0)*.25+(S.school==="国際高専"&&S.phase==="kosen"?4:0)+(S.phase==="abroad"?8:0));
+  if(k==="chu"){S.hv=clamp(S.hv+(a.study-2)*.7,25,78);add("know",a.study*.6-.6);add("hp",a.club*.8+a.rest*.8-2);add("rel",a.club*.6+a.play*.8-1.5);add("joy",a.play*1.5+a.rest*.8-2.5-(a.study>=4?2:0));S.assets+=S.w>0?3:S.w<0?1:2}
+  else if(k==="kosen"){
+    add("know",a.study*.9-.8);S.buff+=(a.study-2)*2.5;
+    if(S.club&&S.club!=="none")S.cpow=clamp((S.cpow||10)+a.club*4);
+    const ck=clubKind();add("tech",(ck==="tech"?a.club*.8:0)+a.study*.3);
+    add("hp",a.rest*1.6-2.5+(ck==="sport"?a.club*.6:0));add("joy",a.play*1.6+a.rest*.8-3.2);add("rel",a.play*1+a.club*.6-2);
+    S.assets+=a.work*5+({"-1":2,"0":4,"1":8})[S.w];if(a.work>=3)add("know",-(a.work-2)*.6);
+    if(a.study>=5&&a.rest===0)add("hp",-3);
+  }else if(k==="univ"){add("know",a.study*.9-1);add("tech",a.study*.5);S.assets+=a.work*6;add("hp",a.rest*1.5-1.5);add("joy",a.play*1.5+a.rest*.6-3);add("rel",a.play*.8-1.2)}
+  else if(k==="work"){add("hp",a.rest*1.2-1.2-(a.job>=6?2.5:0));add("joy",a.hobby*1.4+a.family*.8-2.8);add("rel",a.family*.8-1.6);add("tech",a.job*.3-.6)}
+  else{add("joy",a.hobby*1.5+a.family*1-3);add("hp",a.rest*1.5-3);add("rel",a.family*1-1.5)}
+}
+
+// ===================== 状態 =====================
+let S=null,inAdv=false;
+const setup={birth:"babies",chal:null,seed:""};
+try{const m=location.hash.match(/^#s(\d{1,9})$/);if(m)setup.seed=m[1]}catch(e){}
+function newLife(seedIn){
+  const seed=+(seedIn||setup.seed)||Math.floor(Math.random()*9e8)+1e8;rng=mulberry32(seed);
+  const pref=setup.birth==="babies"?wpick(PREFS,p=>p[1])[0]:pick(PREFS)[0];
+  const wealth=wpick([["低め",-1,.25],["ふつう",0,.55],["高め",1,.2]],x=>x[2]);
+  return{seed,chal:setup.chal,joySum:0,joyN:0,pref,wealth:wealth[0],w:wealth[1],fem:R()<.24,sur:pick(SURNAME),
+    phase:"chu",year:1,sem:0,age:12,
+    st:{hp:clamp(66+gauss()*10,30,95),joy:clamp(60+gauss()*12,25,95),know:clamp(48+gauss()*12+wealth[1]*4,15,90),rel:clamp(50+gauss()*13,15,90)},
+    hv:clamp(50+gauss()*8+wealth[1]*2.5,32,70),eng:clamp(30+gauss()*10+wealth[1]*5,5,80),dream:null,dreamText:"",dp:0,tech:clamp(18+gauss()*8,3,50),inc:0,assets:5,life:0,cpow:10,
+    school:null,dept:null,course:null,dc:null,dorm:false,club:null,cclub:null,path:null,dest:null,job:null,edu:"中学",univLen:2,
+    lost:0,reds:0,ryunen:0,kyugaku:false,crush:false,partner:false,married:false,kids:0,grand:0,retired:false,
+    seen:{},flags:{},buff:0,notable:[],log:[],map:[],pending:null,queue:[],done:false,end:null,cause:null,alloc:null,allocK:null};
+}
+const SP=()=>(S.school&&sch(S.school)[7])||{};
+const clubKind=()=>S.club==="special"?SP().kind:S.club==="robo"||S.club==="procon"?"tech":S.club==="sport"?"sport":"other";
+const add=(k,v)=>{if(k==="eng")S.eng=clamp(S.eng+v);else if(k==="hv")S.hv=clamp(S.hv+v,25,78);else if(k==="tech")S.tech=clamp(S.tech+v);else S.st[k]=clamp(S.st[k]+v)};
+function when(){return{chu:`中${S.year}`,kosen:`高専${S.year}`,hs:"高校",univ:"大学",senkou:"専攻科",abroad:"海外大学"}[S.phase]||(S.retired?"引退後":"社会人")}
+function log(t,cls=""){S.log.push({a:when(),age:S.age,t,cls,star:false})}
+function note(t,p){S.notable.push({a:when(),age:S.age,t,p})}
+function decide(q,opts,tag="決断"){const d={q,opts,tag,noAdv:inAdv};if(S.pending)S.queue.push(d);else S.pending=d}
+const deptName=()=>S.dept+(S.course?`（${S.course}）`:"");
+
+// ===================== 中学 =====================
+const CHU={
+  "10":()=>{log(`${full(S.pref)}の公立中学校に入学した。1学年は${pick([4,5,6])}クラス。`,"big");
+    if(NO_KOSEN.includes(S.pref))log(`${full(S.pref)}には高専がない。この時点では、高専という学校を知らなかった。`);
+    decide("部活はどうする？",[
+      {l:"運動部",s:"健康と人間関係",fn:()=>{S.cclub="運動部";add("hp",8);add("rel",6);log("運動部に入った。朝練で毎日6時半に家を出る。","dec")}},
+      {l:"科学部・パソコン部",s:"技術の芽が出る",fn:()=>{S.cclub="科学部";add("tech",8);add("know",3);log("科学部に入った。最初に作ったのはLEDが光るだけの回路だった。","dec")}},
+      {l:"吹奏楽・美術などの文化部",s:"幸福と人間関係",fn:()=>{S.cclub="文化部";add("joy",6);add("rel",5);log("文化部に入った。放課後の音楽室が居場所になった。","dec")}},
+      {l:"入らない",s:"配分の「部活」は自習に回る",fn:()=>{S.cclub=null;add("rel",-4);log("部活には入らなかった。","dec")}}])},
+  "11":()=>{log(pick(["家の電子レンジを分解して、親にものすごく怒られた。","初めてのスマホを買ってもらった。","校外学習で、地元の工場を見学した。"]));
+    decide("お年玉が入った。どう使う？",[
+      {l:"マイコンボードと電子工作キットを買う（−1万円）",cost:1,s:"技術が上がる",fn:()=>{add("tech",6);log("マイコンボードを買った。Lチカに3時間かかった。","dec")}},
+      {l:"ゲーム機を買う（−3万円）",cost:3,s:"幸福と人間関係",fn:()=>{add("joy",8);add("rel",3);log("ゲーム機を買った。友だちの家に集まる回数が増えた。","dec")}},
+      {l:"貯金する",s:"",fn:()=>{S.assets+=2;log("全部貯金した。","dec")}}],"お金")},
+  "20":()=>{const opts=[];
+    if(S.w>=0)opts.push({l:"集団塾に通う",s:"毎学期 −3万円。偏差値が上がりやすい",fn:()=>{S.flags.juku=1;add("hv",4);add("joy",-3);log("駅前の集団塾に通い始めた。夜9時半に家に帰る。","dec")}});
+    if(S.w>0)opts.push({l:"個別指導と家庭教師",s:"費用は高いが伸びる",fn:()=>{S.flags.juku=2;add("hv",6);log("個別指導塾と家庭教師、週3回。","dec")}});
+    opts.push({l:"通信教材で自習",s:"自分のペースで",fn:()=>{add("hv",S.st.know>55?3:1);log("通信教材で自習することにした。届いた教材を半分ためた月もある。","dec")}});
+    if(S.w<0)opts.push({l:"地域の無料学習支援に行く",s:"大学生が教えてくれる",fn:()=>{add("hv",3);add("rel",3);log("公民館の無料学習会に通い始めた。教えてくれた大学生が、高専出身だった。","dec");S.flags.know=1}});
+    opts.push({l:"塾には行かない",s:"",fn:()=>log("塾には行かなかった。","dec")});
+    decide("中2の春。塾、どうする？",opts)},
+  "21":()=>{if(!S.flags.know)log(pick(["テレビで高専ロボコンを見た。高校生くらいの人たちが、本気でロボットを作っていた。","理科の先生に「高専って知ってる？」と聞かれた。","ネットの動画で、高専生の寮生活を見た。","いとこが高専生だと知った。話を聞いたら、少し興味が出た。"]));
+    log("職場体験で、近所の"+pick(["自動車整備工場","町工場","保育園","スーパー","市役所"])+"に3日間行った。")},
+  "30":()=>{log(`中3の春。校内実力テストは学年${rank()}位だった。`);
+    decide("中3の夏休み。どう過ごす？",[
+      {l:"高専のオープンキャンパスを回る（−2万円）",cost:2,s:"交通費がかかる。技術と幸福",fn:()=>{S.flags.oc=1;add("tech",4);add("joy",4);log("高専のオープンキャンパスへ。実習工場の旋盤と、ロボコン部のロボットを見た。","dec")}},
+      {l:"夏期講習で勉強漬け",s:"偏差値が上がる",fn:()=>{add("hv",4);add("joy",-4);log("夏期講習、朝から晩まで。","dec")}},
+      {l:"部活の最後の大会に全力",s:"思い出と人間関係",fn:()=>{add("rel",6);add("joy",6);log(S.cclub?`${S.cclub}の最後の大会。${R()<.25?"県大会まで勝ち進んだ。":"地区大会で負けて、みんなで泣いた。"}`:"部活はないので、友だちと海に行った。","dec")}}])},
+  "31":()=>{log(`冬の模試。偏差値は${Math.round(S.hv)}。`);
+    if(S.st.rel>55&&S.st.know>55){log("内申点が良く、推薦入試の対象になった。");S.flags.suisen=1}
+    chooseSchool()}
+};
+function rank(){const n=pick([120,150,180,200]);return Math.max(1,Math.round(n*(1-(1/(1+Math.exp(-(S.hv-50)/7))))))+"/"+n}
+const myHV=()=>S.hv+(S.flags.suisen?3:0);
+function judge(sv){if(!sv)return"?";const d=myHV()-sv;return d>=4?"A":d>=1?"B":d>=-2?"C":d>=-5?"D":"E"}
+function passP(sv){if(!sv)return .15;return 1/(1+Math.exp(-(myHV()-sv+1)/2.3))}
+function deptList(s){return s[4].map(d=>typeof d==="string"?d:d.n)}
+function chooseSchool(second){
+  const list=second?shuffle(SCHOOLS.filter(s=>s[2]&&s[2]<=Math.max(58,S.hv)&&s[3]!=="公立")).slice(0,4).sort((a,b)=>b[2]-a[2]):SCHOOLS.slice();
+  const opts=list.map(s=>{const locked=s[3]==="公立"&&s[1]!==S.pref;const j=judge(s[2]);const sp=s[7]||{};
+    const tags=[sp.club?`名物：${sp.club}`:"",sp.robo?"ロボコン強豪":"",s[1]!==S.pref?"県外なので寮":"",s[3]==="私立"?"学費が高い":""].filter(Boolean).join("・");
+    return{l:`${s[0]}（${full(s[1])}）`,s:locked?`${s[3]}・偏差値${s[2]}　${full(s[1])}生まれの人だけが受験できる`:`${s[3]}・偏差値${s[2]||"—（独自選抜）"}　${deptList(s).length}学科${tags?"　"+tags:""}`,jd:locked?"🔒":j,jc:"j"+j,locked,fn:()=>pickDept(s,second)}});
+  if(second)opts.push({l:"高専をあきらめて地元の高校へ",s:"高専生にはならない",fn:goHS});
+  decide(second?"不合格。二次募集をしている高専がある。":"受験する高専を選ぶ（偏差値順・判定つき）",opts,second?"二次募集":"高専受験");
+  S.pending.list=true;
+}
+function pickDept(s,second){
+  decide(`${s[0]}。どの学科を受ける？　${s[5]}`,s[4].map(d=>{const n=typeof d==="string"?d:d.n,c=typeof d==="string"?null:d.c;
+    return{l:n,s:c?`入学後に${c.length}コースから選ぶ：${c.slice(0,4).join("・")}${c.length>4?" ほか":""}`:CODE[code(n)].desc,fn:()=>examK(s,d,second)}}),"学科");
+}
+function examK(s,d,second){
+  const n=typeof d==="string"?d:d.n;
+  const p=second?Math.min(.95,passP(s[2])+.35):passP(s[2]);
+  log(`${s[0]} ${n}を受験した。${second?"二次募集。":S.flags.suisen?"推薦入試。":"学力検査。"}`,"dec");
+  if(R()<p){
+    S.school=s[0];S.spref=s[1];S.kind=s[3];S.dept=n;S.courses=typeof d==="string"?null:d.c;S.dc=code(n);
+    if(S.courses&&!/コース|系/.test(n))S.dc=code(S.courses.join(""));
+    S.dorm=s[1]!==S.pref||R()<.3||!!(s[7]||{}).dorm;
+    log("合格。受験番号を見つけたとき、声が出た。","big");
+    if(s[3]==="公立")note(`生まれた地の公立高専（${s[0]}）に入学`,PUB_P[s[0]]||.02);
+    if(s[3]==="私立"&&S.w<0){log("学費が高い。奨学金を借りることにした。","red");S.flags.loan=1}
+    if(s[0].startsWith("神山"))note("神山まるごと高専に合格",.004);
+    if(!second&&p<.3)note(`判定${judge(s[2])}から逆転合格`,Math.max(.05,p));
+    if(S.dc==="S")note("商船学科に入学",.02);
+    if(NO_KOSEN.includes(S.pref))note(`高専のない${full(S.pref)}から高専へ`,.3);
+    S.flags.enter=1;
+    decide("15歳。合格発表の帰り道、何を思った？",[
+      {l:"やっと始まる",s:"",fn:()=>{add("joy",5);log("「やっと始まる」と思った。","dec")}},
+      {l:"本当にこれでよかったのか",s:"",fn:()=>{add("know",2);log("「本当にこれでよかったのか」と、少しだけ思った。","dec")}},
+      {l:S.dorm?"親と離れるのが少しさみしい":"友だちと別の学校になるのがさみしい",s:"",fn:()=>{add("rel",4);log("帰り道、少しさみしかった。","dec")}}],"ひと休み");
+  }else{
+    log("不合格だった。掲示板に、自分の番号はなかった。","red");add("joy",-15);
+    if(second){log("二次募集も不合格だった。","red");goHS();return}
+    chooseSchool(true);
+  }
+}
+function goHS(){S.phase="hs";S.year=0;S.dc=pick(["M","E","J"]);log("地元の普通科高校に進学した。高専のパンフレットは、机の奥にしまった。","red")}
+
+// ===================== 高専 =====================
+function subjects(){if(S.courses&&!S.course)return[...SUBJ_LOW,"工学基礎","情報リテラシー"];const d=CODE[S.dc].subj;return S.year<=2?[...SUBJ_LOW,...d.slice(0,2)]:[...d,...SUBJ_HIGH]}
+function testK(){
+  const subs=subjects();let tot=0;const reds=[];
+  subs.forEach(n=>{const sc=clamp(Math.round(47+S.st.know*.45+S.buff+gauss()*11+(S.st.joy<30?-7:0)));tot+=sc;if(sc<60)reds.push(n)});
+  const avg=Math.round(tot/subs.length),lost=reds.filter(()=>R()>.74+S.st.know/450);
+  S.lost+=lost.length;S.reds+=reds.length;S.buff=0;
+  const nm=S.sem?"学年末試験":"前期定期試験";
+  if(!reds.length){log(`${nm}。${subs.length}科目の平均${avg}点、赤点なし。`);add("joy",2)}
+  else{const rs=reds.map(x=>`「${x}」`).join("");
+    if(lost.length)log(`${nm}。平均${avg}点。${rs}が60点に届かず赤点。再試験でも${lost.map(x=>`「${x}」`).join("")}を落とした。`,"red");
+    else log(`${nm}。平均${avg}点。${rs}で赤点。再試験で回収した。`,"red");
+    add("joy",-3*reds.length);add("know",2)}
+}
+// 部の予算会議：お金を使うか → そのあと大会
+function clubBudget(){
+  if(!S.club||S.club==="none"){clubSeason();return}
+  const sp=SP();
+  const buy=S.club==="special"?sp.buy:S.club==="robo"?["大会用のモーターとバッテリーを新調する",5]:S.club==="procon"?["競技用に新しいノートPCを買う",12]:S.club==="sport"?["遠征合宿に参加する",4]:["新しい楽器・機材を買う",5];
+  decide(`${S.clubName}の予算会議。部費だけでは足りない。（部の実力 ${Math.round(S.cpow)}）`,[
+    {l:`自腹で${buy[0]}（−${buy[1]}万円）`,cost:buy[1],s:"部の実力が大きく上がる",fn:()=>{S.cpow=clamp(S.cpow+14);if(clubKind()==="tech")add("tech",3);log(`自腹で${buy[0].replace(/する$/,"した").replace(/う$/,"った").replace(/買い足す$/,"買い足した").replace(/新調する$/,"新調した")}。`,"dec");clubSeason()}},
+    {l:"部費の範囲でやりくりする",s:"お金は使わない",fn:()=>{S.cpow=clamp(S.cpow+3);log("部費の範囲でやりくりした。","dec");clubSeason()}},
+    {l:"OBやOGに寄付をお願いして回る",s:"うまくいけば部が強くなる",fn:()=>{if(R()<.35+S.st.rel/300){S.cpow=clamp(S.cpow+10);add("rel",3);log("OBの会社から寄付が届いた。","dec")}else log("寄付は集まらなかった。","dec");clubSeason()}}],"部活とお金");
+}
+function clubSeason(){clubSeason0();if(S.year===4&&S.club&&S.club!=="none")log("この大会を最後に、部活を引退した。")}
+function clubSeason0(){
+  const c=S.club,sp=SP();if(!c)return;
+  const cp=S.cpow;
+  if(c==="special"){
+    if(!S.flags.spbig&&R()<clamp((cp-40)/220,.005,.35)){S.flags.spbig=1;log(sp.big.log,"big");note(sp.big.t,sp.big.p);add("joy",8);
+      if(S.school==="近畿大学高専"&&S.st.hp>=65&&R()<.45){S.flags.scout=1;log("試合後、スタンドにプロ野球のスカウトが来ていたと聞いた。","big")}}
+    else log(pick(sp.season));return}
+  if(c==="robo"){add("tech",3);
+    if(S.flags.robozen){log("ロボコン地区大会。今年は2回戦で、相手の足回りに押し負けた。");return}
+    const p=clamp((cp-35)/200*(sp.robo||1),.01,.5);
+    if(R()<p){S.flags.robozen=1;log("ロボコン地区大会で推薦をもぎ取り、全国大会（両国国技館）へ。","big");note("ロボコン全国大会に出場",.05);
+      if(R()<.12*(sp.robo||1)*(cp/80)){log("全国大会で優勝。高専ロボコンの頂点に立った。","big");note("ロボコン全国優勝",.1);add("tech",10);
+        decide("全国優勝チームとして、ABUロボコン（アジア太平洋大会）の日本代表に選ばれた。",[
+          {l:"日本代表として出場する",s:"アジア太平洋の強豪と戦う",fn:()=>{if(R()<clamp(.12*(S.cpow/80)*(sp.robo||1)/2+.05,.05,.3)){log("ABUロボコンで優勝した。高専のロボットが、アジア太平洋の頂点に立った。","big");urNote("abu","ABUロボコンで世界一")}else{log("ABUロボコンに出場。ベスト8で敗れた。各国のロボットの速さに圧倒された。","big");note("ABUロボコンに日本代表で出場",.003)}}},
+          {l:"後輩に託す",s:"",fn:()=>log("出場は後輩たちに託した。","dec")}],"世界へ")}add("joy",6)}
+    else log(pick(["ロボコン地区大会。本番で無線が切れ、ロボットは一歩も動かなかった。","ロボコン地区大会。予選リーグで敗退。ピットで泣いている先輩がいた。","ロボコン地区大会。アイデア賞をもらった。全国には届かなかった。"]))}
+  else if(c==="procon"){add("tech",3);
+    if(!S.flags.procon&&R()<clamp((cp-35)/200,.01,.4)){S.flags.procon=1;log("プロコンで予選を通過し、本選に出場した。","big");note("プロコン本選に出場",.08)}
+    else log(pick(["プロコンの予選に応募したが、書類で落ちた。","深夜まで競技プログラミングの過去問を解いた。","プロコンには出ず、文化祭用のゲームを作った。"]))}
+  else if(c==="sport"){
+    if(!S.flags.zenkou&&R()<clamp((cp-35)/200+(S.st.hp-55)/400,.01,.4)){S.flags.zenkou=1;log(`${S.clubName}で地区大会を勝ち抜き、全国高専大会に出場した。`,"big");note("全国高専大会に出場",.1);add("joy",5)}
+    else log(`${S.clubName}の高専大会、地区予選で敗退。帰りのバスは静かだった。`)}
+  else if(c==="culture"){log(pick(["高専祭のステージで演奏した。客席の半分は保護者だった。","部室のこたつで、後輩とだらだら過ごす時間が増えた。","部の展示に、思っていたより人が来た。"]));add("rel",3)}
+}
+const KOSEN_FLAVOR=[["テスト前、先輩から代々伝わる過去問のフォルダが回ってきた。",{know:1}],["「高専生って大学生でしょ？」と中学の同級生に言われ、説明するのをやめた。",{}],["15時に授業が終わったので、そのまま海を見に行った。",{joy:3}],["レポートの締切は23:59。提出ボタンを押したのは23:58だった。",{joy:-1}],["制服がないので、毎朝着ていく服に悩む。",{}],["LaTeXでレポートを書けるようになった。Wordには戻れない。",{tech:2}],["ノートPCにコーヒーをこぼした。修理に4万円かかった。",{joy:-5,yen:-4}],["留学生のチューターになった。母国の料理を教えてもらった。",{rel:4}],["学校の近くのラーメン屋で、先生と鉢合わせした。",{}],["3Dプリンタで部屋の鍵のスペアを作ろうとして、先生に止められた。",{tech:2}],["ハッカソンに出て、48時間で寝たのは3時間だった。",{tech:3,hp:-3}],["インフルエンザで試験期間の半分を寝て過ごした。",{hp:-6}],["実験の班が最悪で、レポートを一人で書いた。",{rel:-3,know:2}],["秋葉原や日本橋のような電気街で、ジャンク品を買いあさった。",{tech:2,yen:-1}]];
+const DORM_FLAVOR=["寮の点呼に30秒遅れて、先輩に廊下で正座させられた。","寮の大浴場で、他学科の先輩と熱力学の話で盛り上がった。","寮祭で、同部屋のやつが女装コンテストに出た。","消灯後、廊下の端でこっそりカップ麺を食べた。","台風で帰省できず、寮に残った十数人で鍋をした。","寮の食堂のカレーが、週に3回出る。"];
+function kosenRandom(){
+  const s=sch(S.school),sp=SP();
+  if(R()<.28)log(pick(s[6]));
+  if(R()<.2)log(pick(CODE[S.dc].fl));
+  if(S.dorm&&R()<.22)log(pick(DORM_FLAVOR));
+  if(!S.crush&&!S.partner&&S.year<=4&&R()<.1){S.crush=true;log(pick(["混合学級で隣の席になった人のことが、気になり始めた。","部活の帰り道、同じバスになる人のことが気になり始めた。","実験レポートを一緒に書いた人のことが、なんとなく気になっている。"]))}
+  if(R()<.25){const f=pick(KOSEN_FLAVOR);log(f[0]);for(const k in f[1])k==="yen"?S.assets+=f[1][k]:add(k,f[1][k])}
+  if(S.year>=3&&!S.flags.soton&&["motor","auto"].includes(S.dream)&&S.eng>=50&&S.tech>=50&&S.dp>=30&&R()<.12){S.flags.soton=1;log("留学フェアで、F1チームとつながりの深いイギリスのサウサンプトン大学の話を聞いた。レースカーの空力を学ぶ授業があるらしい。","big")}
+  if(S.dream&&R()<.12){const D=DREAMS[S.dream];if(D)log(pick(D.fl))}
+  if(S.year>=3&&!S.flags.kigyo&&R()<.004*(sp.kigyo||1)){S.flags.kigyo=1;log("友人と学生起業した。登記簿に自分の名前が載った。","big");note("在学中に起業",.006);add("tech",8)}
+}
+function chooseCourse(){
+  const cs=S.courses;if(!cs)return;
+  const pop=c=>/情報|AI|ロボ|航空|知能|セキュリティ/.test(c);
+  decide(`2年からのコースを選ぶ。人気のコースは成績順で決まる。（知識 ${Math.round(S.st.know)}）`,cs.map(c=>({l:c,s:pop(c)?"人気が高い。成績しだいで第2希望へ":CODE[code(c)].desc,fn:()=>{
+    if(pop(c)&&R()<clamp((62-S.st.know)/50,0,.6)){const alt=pick(cs.filter(x=>x!==c&&!pop(x)))||c;S.course=alt;log(`第1希望の${c}は定員オーバー。成績順で${alt}に決まった。`,"red");add("joy",-6)}
+    else{S.course=c;log(`${c}に進むことになった。`,"dec")}
+    S.dc=code(S.course);}})),"コース選択");
+}
+const KOSEN={
+  "10":()=>{const s=sch(S.school),sp=SP(),C=CODE[S.dc];
+    log(`15歳の春、${S.school} ${S.dept}に入学した。${s[5]}`,"big");
+    log(`クラス40人ほどのうち、${S.fem?"女子":"男子"}は${S.fem?Math.max(2,Math.round(C.fem*40)):Math.round((1-C.fem)*40)}人。`);
+    log(S.dorm?`${S.spref!==S.pref?`${full(S.pref)}を出て、`:""}学生寮に入った。相部屋、門限と点呼つき。`:"自宅から電車とバスで通学する。片道1時間。");
+    const spt=pick(["サッカー部","バスケ部","陸上部","バレー部","柔道部","硬式テニス部"]),cu=pick(["軽音楽部","写真部","鉄道研究会","アマチュア無線部","茶道部"]);
+    const opts=[
+      {l:"ロボコン部",s:sp.robo?"この高専は全国常連。技術が伸びる":"技術が伸びる。お金と時間がかかる",fn:()=>{S.club="robo";S.clubName="ロボコン部";log("ロボコン部に入った。最初の仕事は部室の掃除と、はんだ付けの練習。","dec")}},
+      {l:"プログラミング部（プロコン）",s:"技術が伸びる",fn:()=>{S.club="procon";S.clubName="プログラミング部";log("プログラミング部に入った。先輩のキーボードがやたらうるさい。","dec")}},
+      {l:spt,s:"健康と人間関係。高専大会がある",fn:()=>{S.club="sport";S.clubName=spt;add("hp",4);log(`${spt}に入った。高専大会という、高専だけの大会がある。`,"dec")}},
+      {l:cu,s:"居場所ができる",fn:()=>{S.club="culture";S.clubName=cu;log(`${cu}に入った。部室が落ち着く。`,"dec")}},
+      {l:"どこにも入らない",s:"配分の「部活」を0にしてバイトや勉強に回せる",fn:()=>{S.club="none";S.clubName="帰宅部";S.alloc.work+=S.alloc.club;S.alloc.club=0;log("部活には入らなかった。","dec")}}];
+    if(sp.club)opts.unshift({l:`${sp.club}（${S.school}の名物）`,s:sp.s,fn:()=>{S.club="special";S.clubName=sp.club;log(sp.join,"dec")}});
+    decide("部活の勧誘が激しい。どこに入る？",opts)},
+  "11":()=>{log("初めての高専祭。模擬店で焼きそばを売った。");chooseCourse();clubBudget()},
+  "20":()=>{log("微分積分が本格化。周りの何人かが目に見えて焦り始めた。");
+    if(S.school==="明石高専"){
+      if(S.st.know>=64&&S.reds<=2)decide("明石高専の長期留学制度。学科内で成績10位以内・不可なしの条件を満たしている。休学せずに留学でき、向こうの単位は一括で認定される。",[
+        {l:"1年間留学する（2年後期〜3年前期）",s:S.w>=0?"家族が費用を出してくれる":"費用が重い。奨学金の審査しだい",fn:()=>akashiAbroad(2)},
+        {l:"半年だけ留学する（2年後期）",s:"短めに",fn:()=>akashiAbroad(1)},
+        {l:"日本に残る",s:"",fn:()=>log("留学はしないことにした。","dec")}],"留学");
+      else log("明石高専には、休学せずに留学できる長期留学制度がある。成績が学科内10位以内に届かず、今回は対象外だった。");
+    }
+    const lic=CODE[S.dc].lic;
+    decide("2年の夏休み。どう過ごす？",[
+      {l:`資格の勉強（${lic}）（受験料 −1万円）`,cost:1,s:"知識と技術",fn:()=>{if(R()<.35+S.st.know/200){log(`${lic}に合格した。`,"dec");add("tech",5);add("know",3)}else{log(`${lic}を受けたが不合格。`,"dec");add("know",2)}}},
+      {l:"原付の免許を取って中古の原付を買う（−10万円）",cost:10,s:"幸福と行動範囲",fn:()=>{log("原付を買った。行動範囲が一気に広がった。","dec");add("joy",10);add("rel",3);S.flags.bike=1}},
+      {l:"自分用のノートPCを組む（−8万円）",cost:8,s:"技術が上がる",fn:()=>{log("パーツを集めて、自分でPCを組んだ。","dec");add("tech",7)}},
+      {l:"ひたすらバイト",s:"お金が増える",fn:()=>{log("夏休みはずっとバイト。大人と話すのに慣れた。","dec");add("rel",3);S.assets+=15}}])},
+  "21":()=>{clubBudget();if(R()<.5)log("同期が一人、普通高校に移っていった。教室の席がひとつ空いた。")},
+  "30":()=>{log(`専門科目が増えてきた。「${CODE[S.dc].subj[0]}」の小テストでクラス平均が40点を切った。`);
+    decide("テスト前の週末、どうする？",[
+      {l:"友だちを集めて勉強会",s:"知識と人間関係",fn:()=>{log("図書館で勉強会。教えるほうが理解できると知った。","dec");add("know",5);add("rel",5);S.buff+=5}},
+      {l:"過去問ネットワークに頼る",s:"効率重視。出題が変われば終わり",fn:()=>{if(R()<.7){log("過去問とほぼ同じ問題が出た。","dec");S.buff+=8}else{log("今年から担当教員が変わり、過去問は役に立たなかった。","red");S.buff-=6}}},
+      {l:"なんとかなると思ってゲーム",s:"幸福は上がる",fn:()=>{log("徹夜でゲーム。月曜の朝、なんとかならない気がしてきた。","dec");add("joy",6);S.buff-=6}}])},
+  "31":()=>{log("18歳。高専3年生のまま成人した。選挙の入場券が届いた。");
+    if(S.crush)decide("気になっている人がいる。高専祭の後夜祭、どうする？",[
+      {l:"思い切って告白する",s:"成功するかは分からない",fn:()=>{S.crush=false;if(R()<.35+S.st.rel/400){S.partner=true;log("告白して、付き合うことになった。","big");note("高専で恋人ができた",.25);add("joy",15)}else{log("告白したが、「友だちのままがいい」と言われた。","red");add("joy",-12)}}},
+      {l:"今の関係のままでいい",s:"何も起きない",fn:()=>{S.crush=false;log("何も言わなかった。卒業まで、たまにそのことを思い出した。","dec")}}]);
+    if(S.club&&S.club!=="none")decide(`${S.clubName}の部長を任された。`,[
+      {l:"引き受ける",s:"部の実力は上がるが、勉強時間が減る",fn:()=>{S.flags.bucho=1;S.cpow=clamp(S.cpow+10);add("rel",6);add("know",-3);log(`${S.clubName}の部長になった。`,"dec")}},
+      {l:"断る",s:"",fn:()=>log("部長は同期に任せた。","dec")}],"部活");
+    clubBudget()},
+  "40":()=>{log("本科4年。高専生への求人は、ひとりあたり20社を超える。");
+    if(S.dc==="J"||S.club==="procon"||["it","startup"].includes(S.dream))decide("高専DCON（ディープラーニングを使った事業コンテスト）にチームで出ないかと誘われた。",[
+      {l:"出る",s:"技術と事業計画で勝負。上位なら企業評価額がつく",fn:()=>{const p=clamp((S.tech-55)/120+(S.dp-30)/300,.02,.3);if(R()<p){S.flags.dcon=1;log("高専DCONで上位に入賞した。審査員の投資家から、事業の評価額がついた。","big");note("高専DCONで上位入賞",.01);add("tech",6)}else{log("高専DCONの本選まで進んだが、入賞はできなかった。","dec");add("tech",3)}}},
+      {l:"出ない",s:"",fn:()=>log("DCONには出なかった。","dec")}],"挑戦");
+    if(S.dc==="S")log("長期の乗船実習へ。半年間、陸を見ない日が続いた。","big");
+    if(R()<.35)decide("海外インターンシップの募集がある。2週間、シンガポール。",[
+      {l:"応募する（−8万円）",cost:8,s:"英語と経験",fn:()=>{log("シンガポールの現地企業で2週間働いた。英語で発表もした。","big");note("海外インターンシップに参加",.08);add("rel",5);add("know",3);add("eng",10);S.flags.abroad=1}},
+      {l:"見送る",s:"",fn:()=>log("今回は見送った。","dec")}],"チャンス")},
+  "41":()=>{S.lab=pick(CODE[S.dc].labs);log(`卒業研究の配属先は${S.lab}に決まった。`);clubBudget();
+    decide("卒業後の進路、どの方向で考える？",[
+      {l:"就職する",s:"学校推薦で大企業も狙える",fn:()=>{S.path="job";log("就職すると決めた。","dec")}},
+      {l:"大学に編入学する",s:"3年次編入。試験は5年の夏",fn:()=>{S.path="hennyu";log("大学編入を目指すと決めた。TOEICと過去問の日々。","dec");add("know",3)}},
+      {l:"専攻科に進む",s:"高専に2年残って学士を取る",fn:()=>{S.path="senkou";log("専攻科に進むと決めた。","dec")}},
+      ...(S.eng>=50||S.flags.ryugaku||S.flags.soton?[{l:"海外の大学に進む",s:`英語力 ${Math.round(S.eng)}。学費と生活費は高い`,fn:()=>{S.path="abroad";log("海外の大学に進むと決めた。IELTSの勉強を始めた。","dec");add("eng",5)}}]:[])],"進路")},
+  "50":()=>{
+    if(!S.flags.scout)return path50();
+    decide("プロ野球のスカウトから「プロ志望届を出す気はあるか」と聞かれた。",[
+      {l:"プロ志望届を出す",s:"指名されるかは分からない",fn:()=>{if(R()<.35+(S.st.hp-65)/100){S.flags.npb=1;log("ドラフト会議で名前が呼ばれた。高専からプロ野球へ。","big");urNote("npb","高専からプロ野球選手に");S.path="job";S.job={tier:"pro",co:"プロ野球球団",role:pick(["投手","内野手","外野手","捕手"]),title:"",start:S.age+1,ind:null};S.inc=BASE.pro}else{log("ドラフト会議で、名前は最後まで呼ばれなかった。","red");add("joy",-12);path50()}}},
+      {l:"エンジニアの道を選ぶ",s:"",fn:()=>{log("プロ志望届は出さなかった。","dec");path50()}}],"ドラフト")},
+  "51":()=>{log(`${S.lab}で卒業研究の発表会。質疑で3分黙った。`);
+    if(R()<.08){log("卒業研究が学会の学生セッションで表彰された。","big");note("卒研が学会で表彰",.08);add("tech",5)}}
+};
+function path50(){
+    if(S.path==="hennyu"){const pool=shuffle(UNIVS).slice(0,3).sort((a,b)=>b[1]-a[1]);
+      decide("編入試験の出願。第一志望はどこ？（受験料と交通費 −5万円）",[...pool.map(u=>({l:u[0],s:`難易度 ${"★".repeat(Math.round(u[1]/20))}`,fn:()=>{S.assets-=5;hennyu(u)}})),{l:`${pick(GIKADAI)}（推薦）`,s:"高専生のための大学。ほぼ確実",fn:()=>hennyu(null)}],"編入試験")}
+    else if(S.path==="job")jobHunt(true);
+    else if(S.path==="abroad")abroadApply();
+    else log("専攻科の入学試験。推薦で合格した。","dec")}
+function akashiAbroad(n){
+  if(S.w<0&&R()>.45){log("奨学金の審査に通らず、留学はあきらめた。","red");add("joy",-6);return}
+  S.abroadSems=n;S.flags.ryugaku=1;S.country=pick(["アメリカ","ニュージーランド","カナダ","ドイツ","フィンランド","オーストラリア"]);
+  log(`長期留学制度で、${S.country}の高校に${n===2?"1年間":"半年間"}留学することになった。`,"big");note("明石高専の長期留学制度で留学",.03);
+}
+const QUT_DEPTS=["機械工学科","電気情報工学科","都市システム工学科"];
+function abroadApply(){
+  const opts=[];
+  if(S.flags.soton)opts.push({l:"サウサンプトン大学 MEng 機械工学（オートモーティブ）",s:"イギリス。学部と修士が一体の4年間＋産業実習1年。レースカーの空力を学ぶ",fn:()=>soton()});
+  if(S.school==="明石高専"&&QUT_DEPTS.includes(S.dept))opts.push({l:"クイーンズランド工科大学（オーストラリア）に編入",s:"明石高専の海外大学編入制度。2年で工学学士（優等）。IELTS 6.5以上が必要",fn:()=>{
+    if(S.eng>=60&&S.st.know>=58&&R()<.75){goAbroad("クイーンズランド工科大学","オーストラリア",2,"工学学士（優等）");note("明石高専からクイーンズランド工科大学に編入",.01)}else abroadFail("クイーンズランド工科大学")}});
+  opts.push({l:"アメリカの州立大学の工学部に3年次編入",s:"英語力しだい",fn:()=>{if(R()<clamp((S.eng-45)/40,.05,.8)){goAbroad(pick(["カリフォルニアの州立大学","ワシントン州の州立大学","テキサスの州立大学"]),"アメリカ",2,"工学学士");note("海外の大学に編入",.05)}else abroadFail("アメリカの州立大学")}});
+  opts.push({l:"やっぱり日本の大学に編入する",s:"技科大の推薦",fn:()=>{S.path="hennyu";hennyu(null)}});
+  decide(`海外大学への出願。（英語 ${Math.round(S.eng)} ・ 技術 ${Math.round(S.tech)}）`,opts,"海外進学");
+}
+function soton(){
+  if(S.w<0&&R()>.4){log("学費と生活費が払えない。給付型奨学金にも落ち、サウサンプトン大学はあきらめた。","red");add("joy",-12);S.path="hennyu";hennyu(null);return}
+  const p=clamp((S.eng-58)/45+(S.tech-60)/90+(S.flags.robozen||S.flags.spbig?.15:0)+(S.dp-40)/300,.04,.6);
+  if(R()<p){log("サウサンプトン大学から合格通知が届いた。イギリスで、レースカーの空力を学ぶ。","big");goAbroad("サウサンプトン大学","イギリス",5,"MEng（工学修士）");note("サウサンプトン大学 MEng に入学",.0015)}
+  else abroadFail("サウサンプトン大学");
+}
+function goAbroad(u,c,len,deg){S.dest=u;S.country=c;S.univLen=len;S.degree=deg;S.abroadPlan=1;log(`${u}への進学が決まった。`,"big");add("joy",12)}
+function abroadFail(u){log(`${u}は不合格だった。日本の技科大に推薦で進むことにした。`,"red");S.path="hennyu";add("joy",-8);hennyu(null)}
+function abroadYear(){
+  const y=S.year;add("eng",6);add("know",3);add("tech",4);S.assets-=S.w>0?0:30;
+  if(S.dest==="サウサンプトン大学"){
+    if(y===0)log("サウサンプトンに着いた。港町で、空はいつも灰色だ。最初の講義は、英語の速さに半分しかついていけなかった。","big");
+    else if(y===1){log("大学の学生フォーミュラのチームに入った。週末はずっとガレージにいた。");add("tech",4)}
+    else if(y===2){log("「Race car aerodynamics」の授業で、リアウイングの負圧分布を計算した。");
+      decide("3年目の終わり。1年間の産業実習（インターン）先を探す。",[
+        {l:"F1チームのインターンに応募する",s:"世界中から応募が来る。英語・技術・夢への熱量しだい",fn:()=>{const p=clamp((S.tech-60)/60+(S.eng-60)/80+(S.dp-50)/150+.15,.05,.55);
+          if(R()<p){S.flags.f1intern=1;log("イギリスのF1チームから、1年間のインターンの採用通知が来た。","big");note("F1チームで1年間インターン",.3)}else{S.flags.carintern=1;log("F1チームは全部落ちた。代わりに自動車メーカーの英国拠点で実習することになった。","red")}}},
+        {l:"自動車メーカーの英国拠点で実習する",s:"確実",fn:()=>{S.flags.carintern=1;log("自動車メーカーの英国拠点で1年間実習することにした。","dec")}}],"インターン")}
+    else if(y===3){if(S.flags.f1intern){log("F1チームでのインターン。風洞模型のパーツを削り、CFDの結果を毎朝報告した。","big");log("レースウィーク、データを見ながらガレージの後ろで息を止めた。");add("tech",8);S.dp=clamp(S.dp+15)}else log("自動車メーカーの英国拠点で実習。テストコースで試作車の計測をした。")}
+    else log("MEngの最終プロジェクト。テーマはダウンフォースと抵抗のトレードオフ。");
+    return}
+  log(y===0?`${S.dest}に着いた。授業はすべて英語。`:pick([`${S.dest}の研究室で、世界中から来た学生と課題を進めた。`,"週末、キャンパスのカフェでレポートを書いた。","インターン先の現地企業で、英語で設計レビューをした。"]));
+}
+function hennyu(u){
+  if(!u){const g=pick(GIKADAI);log(`${g}の推薦入試に合格した。`,"big");S.dest=g;add("joy",5);return}
+  const sc=S.st.know*.8+S.tech*.15+gauss()*7+4,p=1/(1+Math.exp(-(sc-u[1]*.82)/5));
+  if(R()<p){log(`${u[0]}の編入試験に合格した。数学・専門・英語、全部に手応えがあった。`,"big");S.dest=u[0];note(`${u[0]}に編入合格`,Math.max(.002,.4*Math.pow(.86,(u[1]-40)/2.2)*.42));add("joy",15)}
+  else{const g=pick(GIKADAI);log(`${u[0]}は不合格。併願していた${g}に進むことにした。`,"red");S.dest=g;add("joy",-8)}
+}
+
+// ===================== 就職・キャリア =====================
+function jobHunt(school){
+  const big=pick(BIGCO[S.dc]),small=pick(SMALLCO[S.dc]);
+  const opts=[
+    {l:`大企業：${big}`,s:school?"学校推薦。倍率は高め、全国転勤あり":"面接は3回。安定と年功",fn:()=>hire("big",big,.55)},
+    {l:`中小企業：${small}`,s:"ほぼ確実に内定。裁量が大きい、倒産のリスクも",fn:()=>hire("small",small,.95)},
+    {l:"ITベンチャー（東京）",s:"給料の振れ幅が大きい。上場すれば大当たり",fn:()=>hire("venture","ITベンチャー",.6,"tech")},
+    {l:"公務員（技術職）",s:"試験あり。いちばん安定",fn:()=>hire("pub",pick(["県庁の技術職","市役所の技術職","国土交通省の技官"]),.5)}];
+  if(S.dream&&DREAMS[S.dream]&&S.dream!=="startup"){const D=DREAMS[S.dream],fit=D.fit.includes(S.dc),co=pick(D.big),sco=pick(D.small);
+    const p=clamp(.35+(S.dp-40)/150+(fit?.1:-.2),.05,.85);
+    opts.unshift({l:`夢の業界：${sco}`,s:`${D.n}。中小・ベンチャー。熱量 ${Math.round(S.dp)}`,fn:()=>hire(D.big.includes(sco)?"big":"small",sco,p+.25,"know",S.dream)});
+    opts.unshift({l:`夢の業界：${co}`,s:`${D.n}。大企業・狭き門。熱量 ${Math.round(S.dp)}${fit?"":"・学科の専門と少し遠い"}`,fn:()=>hire(co.startsWith("自分")?"own":"big",co,p,"know",S.dream)});}
+  if(S.dream==="custom")opts.unshift({l:`夢：${S.dreamText}に関わる会社`,s:`自分で決めた夢。熱量 ${Math.round(S.dp)}`,fn:()=>hire("small",`${S.dreamText}に関わる会社`,clamp(.3+S.dp/150,.05,.85),"know","custom")});
+  if(S.flags.dcon)opts.unshift({l:"DCONの事業で起業する",s:"評価額のついた事業を、自分の会社で育てる",fn:()=>{S.job={tier:"own",co:"自分のAIスタートアップ",role:"代表取締役",title:"社長",start:S.age,ind:"startup"};S.jobInds=(S.jobInds||[]).concat("startup");S.inc=360;log("高専DCONの事業で、会社を立ち上げた。","big")}});
+  if(["大学","海外大学","専攻科"].includes(S.edu)&&!S.phd)opts.push({l:"大学院の博士課程に進む",s:"修士2年＋博士3年。研究者や大学教員への道",fn:()=>{S.phd=1;S.edu="博士";S.phase="univ";S.univLen=5;S.year=0;S.dest="大学院（修士・博士）";log("大学院に進んだ。博士課程まで行くつもりだ。","dec")}});
+  if(S.edu==="博士"){opts.unshift({l:"大学の助教",s:"研究者として生きる。任期つき",fn:()=>hire("acad",pick(["国立大学","旧帝大の研究室"]),.6,"know","research")});
+    if(S.school)opts.unshift({l:`母校の${S.school}の教員`,s:"高専で教える",fn:()=>hire("acad",S.school,.55,"know","research")})}
+  if(S.flags.f1intern)opts.unshift({l:"F1チーム：インターン先のチームから正式オファー",s:"イギリスで、F1の空力・車両開発の仕事",fn:()=>hire("f1","イギリスのF1チーム",clamp(.55+(S.tech-60)/100,.3,.95),"tech","motor")});
+  if(S.edu==="海外大学"&&S.country)opts.push({l:`${S.country}で就職する`,s:"現地のエンジニアリング会社",fn:()=>hire("big",`${S.country}のエンジニアリング会社`,clamp(.4+(S.eng-60)/80,.1,.9),"know")});
+  if(S.dc==="S")opts.unshift({l:"大企業：大手海運会社（外航船）",s:"一度の航海で数か月、海の上",fn:()=>hire("big","大手海運会社",.6)});
+  decide(school?"学校推薦の求人票が届いた。どこを受ける？":"就職活動。大企業か、中小か。",opts,"就職");
+}
+function hire(tier,co,p,k="know",ind=null){
+  const pp=clamp(p+((k==="tech"?S.tech:S.st.know)-55)/150+(S.flags.abroad?.05:0),.05,.98);
+  if(R()<pp)log(`${co}から内定をもらった。`,"big");
+  else{ind=null;const sm=pick(SMALLCO[S.dc]);log(`${co}は不採用。秋の二次募集で${sm}に内定した。`,"red");tier="small";co=sm;add("joy",-6)}
+  const bonus=S.edu==="博士"?90:S.edu==="大学"?50:S.edu==="専攻科"?30:S.edu==="海外大学"?(S.degree&&S.degree.startsWith("MEng")?90:60):0;
+  const role=tier==="f1"?pick(["空力エンジニア","ビークルダイナミクスエンジニア","パフォーマンスエンジニア"]):ind&&DREAMS[ind]?DREAMS[ind].role:pick(ROLE[S.dc]);
+  S.job={tier,co,role,title:"",start:S.age,ind};if(ind){S.jobInds=S.jobInds||[];S.jobInds.push(ind)}
+  if(tier==="f1"){log("F1の世界に入った。","big");note("F1チームに就職",.3);S.ur=S.ur||[];S.ur.push("f1")}
+  if(ind&&ind===S.dream&&tier!=="f1"){note(`夢だった${dreamName()}の業界に就職`,.25)}
+  S.inc=BASE[tier]+bonus+Math.round(gauss()*10);
+  if(tier==="big"&&S.phase==="kosen")note("高専から大企業に就職",.35);
+}
+const WORK_FLAVOR={
+  acad:["講義の準備で、週末が消えた。","科研費の申請書を、締切の夜に出した。","学生が初めて学会で発表した。自分のときより緊張した。","研究室の学生の就職先が決まった。"],
+  pro:["キャンプで、毎朝300球投げ込んだ。","二軍の試合で、高専の後輩たちが応援に来てくれた。","チームメイトに、バットの重心の話をしたら面白がられた。","ナイターの照明が、夏の夜に白く光っていた。"],
+  f1:["レースウィーク、ガレージの裏でデータを見続けた。","シーズンオフ、新車の風洞試験で毎晩遅くまで残った。","フライアウェイの遠征で、1年の半分は飛行機の中だった。","レギュレーション変更で、去年の設計がほとんど使えなくなった。","自分が設計したパーツが、初めて実戦に投入された。"],
+  big:["新人研修で、大卒の同期と3か月同じ寮に住んだ。","配属先の工場は、山の中だった。","社内の改善提案で部署表彰をもらった。","交代勤務の夜勤明け、朝日がまぶしかった。","大卒の同期が先に昇格した。","社員食堂の日替わり定食に詳しくなった。","全社の技術発表会で、自分の改善事例を話した。","大規模な組織変更で、部署の名前が3回変わった。"],
+  small:["社長に直接「これ、作れる？」と聞かれた。作った。","営業も設計も現場も、全部やった。","取引先の大企業に、高専の同期がいた。","繁忙期、3週間休みがなかった。","社長の昔話を聞きながら、駅まで送ってもらった。","工場の機械を自分で直したら、一目置かれるようになった。"],
+  venture:["オフィスが引っ越した。1年で3回目。","資金調達のニュースが出て、社員が倍になった。","肩書きが「テックリード」になった。","深夜のリリースで、本番環境を一瞬止めた。"],
+  pub:["道路の点検で、山奥の橋を一日中見て回った。","議会の答弁資料づくりを手伝った。","異動の内示が出た。","地元の小学校で、出前授業をした。","大雨の夜、災害対応で庁舎に泊まり込んだ。"],
+  own:["取引先が1社増えた。","社員の給料日前は、いまだに眠れない。","昔の上司から仕事の依頼が来た。"]
+};
+function flav(arr){const ok=arr.filter(t=>(S.school||!/高専|寮/.test(t))&&t!==S.lastFl);const t=pick(ok.length?ok:arr);S.lastFl=t;return t}
+const JSC=J=>({pro:65,f1:60,acad:45,own:50,big:40,venture:30,pub:30,small:20}[J.tier]||0)+({テクニカルディレクター:30,社長:25,取締役:22,部長:20,技術部長:18,シニアエンジニア:12,課長:10,主査:6,主任:5}[J.title]||0);
+function workYear(){
+  if(S.job&&!["嘱託","顧問"].includes(S.job.title)&&(!S.best||JSC(S.job)>=JSC(S.best)))S.best={...S.job};
+  if(S.retired)return oldYear();
+  const J=S.job,y=S.age-J.start,a=S.age,al=S.alloc,jm=.55+al.job*.15,fm=.4+al.family*.3;
+  const g=({acad:.03,pro:-.1+R()*.5,f1:.045,big:.035,small:.022,venture:-.03+R()*.14,pub:.03,own:-.05+R()*.2}[J.tier]+(al.job-4)*.006)*(a>=50?.3:1);
+  S.inc=Math.max(150,Math.round(S.inc*(1+g)));S.life+=S.inc;S.assets+=Math.round(S.inc*(.1+S.st.joy/1000)-al.hobby*8);
+  if(R()<.5)log(flav(WORK_FLAVOR[J.tier]));
+  if(al.job>=6&&R()<.25){log("終電を逃す日が続いた。","red");add("hp",-4)}
+  // UR人生へのきっかけ
+  if(!S.flags.astroCall&&a>=28&&a<=45&&(S.dream==="aero"||S.tech>=72)&&S.st.hp>=60&&S.eng>=50&&R()<(S.dream==="aero"?.02:.003)){S.flags.astroCall=1;
+    decide("JAXAが、十数年ぶりに宇宙飛行士の募集を始めた。応募資格には、技術者としての経験も入っている。",[
+      {l:"応募する",s:"書類、英語、健康診断、閉鎖環境での試験。数千人から数人",fn:()=>{const p=clamp((S.eng-50)/150+(S.st.hp-60)/150+(S.tech-60)/200+(S.dream==="aero"?.04:0),.01,.2);
+        if(R()<.4)log("書類選考を通った。","dec");else{log("書類選考で落ちた。","red");return}
+        if(R()<p*1.5){S.flags.astro=1;S.job={tier:"pub",co:"宇宙航空研究開発機構（JAXA）",role:"宇宙飛行士候補者",title:"",start:S.age,ind:"aero"};S.jobInds=(S.jobInds||[]).concat("aero");S.inc=Math.max(S.inc,700);log("最終選抜に合格した。宇宙飛行士候補者になった。","big")}else log("最終選抜までは残ったが、選ばれなかった。","red")}},
+      {l:"今の仕事を続ける",s:"",fn:()=>log("応募はしなかった。ニュースで合格者の顔を見た。","dec")}],"夢");return}
+  if(S.flags.astro===1&&a-J.start>=3&&R()<.35){S.flags.astro=2;J.role="宇宙飛行士";log(`${a}歳、ロケットで宇宙へ上がった。国際宇宙ステーションの窓から、日本列島が見えた。`,"big");urNote("astro","宇宙飛行士として宇宙へ");add("joy",20)}
+  if(!S.flags.antCall&&a>=26&&a<=45&&S.tech>=60&&S.st.hp>=65&&["big","pub","small"].includes(J.tier)&&R()<.003){S.flags.antCall=1;
+    decide("南極地域観測隊の設営部門で、機械や電気がわかる技術者を探しているらしい。会社から推薦したいと言われた。",[
+      {l:"行く",s:"1年以上、南極で越冬する",fn:()=>{log("南極地域観測隊に参加した。昭和基地で発電機と車両の整備をしながら、極夜を越えた。","big");urNote("antarctic","南極地域観測隊で越冬");add("tech",6);add("joy",8);add("rel",-4)}},
+      {l:"断る",s:"",fn:()=>log("今回は断った。","dec")}],"極地");return}
+  if(J.tier==="big"&&S.dc==="S"&&/海運/.test(J.co)&&!S.flags.captain&&a>=38&&S.tech>=60&&R()<.012){S.flags.captain=1;J.title="船長";S.inc+=200;log(`${a}歳、外航船の船長になった。乗組員20人の命を預かる。`,"big");urNote("captain","外航船の船長に")}
+  if(J.tier==="own"&&!S.flags.ownipo&&R()<(S.flags.dcon?.012:.001)){S.flags.ownipo=1;S.assets+=50000;log("創業した会社が上場した。鐘を鳴らしたとき、高専の部室を思い出した。","big");urNote("ipo","創業した会社を上場させた")}
+  if(J.tier==="acad"){
+    if(!J.title&&a>=36&&R()<.18*jm){J.title="准教授";S.inc+=60;log(`${a}歳、准教授になった。`,"big")}
+    else if(J.title==="准教授"&&a>=46&&R()<.12*jm){J.title="教授";S.inc+=120;log(`${a}歳、教授になった。`,"big");note("教授になった",.01)}
+    else if(J.title==="教授"&&J.co===S.school&&a>=55&&!S.flags.kocho&&R()<.08){S.flags.kocho=1;J.title="校長";log(`${a}歳、母校の${S.school}の校長になった。`,"big");note("母校の高専の校長に",.002)}
+    if(J.title==="教授"&&!S.flags.prize&&S.st.know>=70&&R()<.02){S.flags.prize=1;log("長年の研究が認められ、世界的な科学賞を受賞した。授賞式の壇上で、高専の実習工場の話をした。","big");urNote("prof","世界的な科学賞を受賞")}
+  }
+  if(J.tier==="pro"){
+    if(!S.flags.ichigun&&R()<.3){S.flags.ichigun=1;log("一軍に初めて昇格した。満員のスタンドの音に足が震えた。","big")}
+    if(R()<.16||a>=35){log(`${a}歳、戦力外通告を受けた。`,"red");
+      decide("野球を離れる。次は？",[{l:"エンジニアに戻る",s:"高専で学んだことが残っている",fn:()=>{S.job={tier:"small",co:pick(SMALLCO[S.dc]),role:pick(ROLE[S.dc]),title:"",start:S.age};S.inc=330;log("高専の同期の紹介で、エンジニアとして働き始めた。","dec")}},{l:"球団のスタッフになる",s:"データ分析の担当",fn:()=>{S.job={tier:"small",co:"プロ野球球団",role:"データアナリスト",title:"",start:S.age};S.inc=500;log("球団のデータアナリストになった。","dec")}}],"岐路");return}
+  }
+  if(R()<.0004){log("年末ジャンボ宝くじが1等に当たった。","big");urNote("lotto","宝くじ1等");S.assets+=70000}
+  if(J.tier==="f1"){
+    if(!J.title&&y>=4&&R()<.3*jm){J.title="シニアエンジニア";S.inc+=120;log("シニアエンジニアに昇格した。","big")}
+    else if(J.title==="シニアエンジニア"&&a>=40&&R()<.06*jm){J.title="テクニカルディレクター";S.inc+=600;log("チームのテクニカルディレクターに就任した。","big");note("F1チームのテクニカルディレクターに",.02)}
+    if(!S.flags.f1win&&R()<.06){S.flags.f1win=1;log("担当したマシンがグランプリで優勝した。表彰台の下で、チームのみんなと叫んだ。","big");note("担当したマシンがグランプリ優勝",.1);add("joy",15)}
+    if(!S.flags.f1back&&a>=45&&R()<.05){S.flags.f1back=1;decide("日本の自動車メーカーから、モータースポーツ部門の責任者として戻らないかと誘われた。",[{l:"日本に戻る",s:"",fn:()=>{switchJob("big","大手自動車メーカーのモータースポーツ部門",.9);S.job.ind="motor";S.job.title="部長"}},{l:"F1に残る",s:"",fn:()=>log("F1に残った。","dec")}],"岐路");return}
+  }
+  if(J.tier==="big"){
+    if(!J.title&&y>=6&&R()<.35*jm){J.title="主任";S.inc+=30;log("主任に昇格した。","big")}
+    else if(J.title==="主任"&&a>=37&&R()<.22*jm){J.title="課長";S.inc+=90;log(`${a}歳、課長になった。部下は12人。`,"big")}
+    else if(J.title==="課長"&&a>=45&&R()<.1*jm){J.title="部長";S.inc+=180;log(`${a}歳、部長になった。高専卒で部長は、社内でも数えるほどしかいない。`,"big");note("大企業の部長に",.04)}
+  }
+  if(J.tier==="small"){
+    if(!J.title&&y>=4&&R()<.25*jm){J.title="課長";S.inc+=50;log(`入社${y}年目で課長になった。`,"big");if(a<30)note("20代で課長",.06)}
+    else if(J.title&&J.title!=="取締役"&&a>=40&&R()<.03*jm){J.title="取締役";S.inc+=150;log("取締役になった。名刺の肩書きが一行増えた。","big");note("中小企業の役員に",.05)}
+  }
+  if(J.tier==="pub"&&!J.title&&y>=8&&R()<.4){J.title="主査";S.inc+=20;log("主査に昇任した。")}
+  else if(J.tier==="pub"&&J.title==="主査"&&a>=45&&R()<.15*jm){J.title="課長";S.inc+=80;log("課長に昇任した。","big")}
+  if(J.tier==="small"&&R()<.012){log("勤めていた会社が倒産した。最後の日、社長が一人ずつ頭を下げた。","red");note("勤め先が倒産",.1);add("joy",-15);
+    decide("会社がなくなった。次は？",[{l:"大企業に転職",s:"経験が武器になる",fn:()=>switchJob("big",pick(BIGCO[S.dc]),a<40?.5:.25)},{l:"地元の別の中小へ",s:"確実",fn:()=>switchJob("small",pick(SMALLCO[S.dc]),.95)},{l:"独立して事業を引き継ぐ",s:"取引先がついてくれれば",fn:()=>startup(.35)}],"岐路");return}
+  if(J.tier==="venture"&&R()<.06){log("会社の資金が尽き、事業を畳むことになった。","red");add("joy",-12);decide("次の仕事は？",[{l:"大企業へ",s:"",fn:()=>switchJob("big",pick(BIGCO[S.dc]),.5,"tech")},{l:"別のベンチャーへ",s:"",fn:()=>switchJob("venture","別のITベンチャー",.85,"tech")}],"岐路");return}
+  if(J.tier==="venture"&&!S.flags.ipo&&R()<.03){S.flags.ipo=1;log("会社が上場した。持っていたストックオプションが、年収の数倍になった。","big");note("勤め先が上場",.15);S.assets+=S.inc*4;add("joy",12)}
+  if(J.tier==="big"&&!S.flags.early&&a>=50&&a<58&&R()<.06){S.flags.early=1;decide("早期退職の募集が出た。退職金は通常の2倍。",[{l:"応じて中小企業へ移る",s:"退職金を受け取る",fn:()=>{S.assets+=S.inc*2;log("早期退職に応じた。","dec");switchJob("small",pick(SMALLCO[S.dc]),.9)}},{l:"残る",s:"",fn:()=>log("会社に残った。","dec")}],"岐路");return}
+  if(S.st.hp<35&&R()<.15){log(pick(["過労で倒れ、2週間入院した。","健康診断で要精密検査になった。生活を見直した。"]),"red");add("hp",8);add("joy",-6)}
+  const r=R();
+  if(a>=60&&!S.flags.teinen){S.flags.teinen=1;
+    if(J.tier==="own"){decide("60歳。自分の会社をどうする？",[{l:"若い社員に継がせる",s:"",fn:()=>{log("社長の座を、30代の社員に譲った。","big");retire()}},{l:"生涯現役で続ける",s:"",fn:()=>{log("まだやめない。","dec");S.flags.lifelong=1}}],"人生");return}
+    decide("60歳、定年。これからどうする？",[{l:"再雇用で65歳まで働く",s:"給料は6割ほど",fn:()=>{S.inc=Math.round(S.inc*.6);J.title="嘱託";log("再雇用で、同じ職場に残った。元部下が上司になった。","dec")}},{l:"中小企業の技術顧問になる",s:"経験を売る",fn:()=>{S.job={tier:"small",co:pick(SMALLCO[S.dc]),role:"技術顧問",title:"顧問",start:a};S.inc=Math.round(S.inc*.5);log("地元の中小企業に、技術顧問として迎えられた。","dec")}},{l:"完全に引退する",s:"退職金と年金で暮らす",fn:()=>retire()}],"定年");return}
+  if(a>=65&&!S.flags.lifelong){retire();return}
+  if(J.tier==="big"&&!S.flags.overseas&&y>=3&&a<50&&r<.12){S.flags.overseas=1;decide(`海外赴任の打診が来た。${pick(["タイ","メキシコ","ドイツ","インドネシア","アメリカ"])}、3年間。`,[{l:"行く",s:"年収と経験が増える。家族との時間は減る",fn:()=>{log("海外に赴任した。現地スタッフ200人の工場で、ラインの立ち上げを任された。","big");note("海外赴任",.3);S.inc+=80;add("know",5);add("rel",-3)}},{l:"断る",s:"",fn:()=>{log("海外赴任は断った。","dec");add("joy",2)}}],"打診");return}
+  if(J.tier!=="big"&&J.tier!=="own"&&!S.flags.offer&&y>=2&&a<45&&r<.1){S.flags.offer=1;decide("大企業から転職のスカウトが届いた。",[{l:"転職する",s:"年収は上がる",fn:()=>switchJob("big",pick(BIGCO[S.dc]),.7)},{l:"今の会社に残る",s:"",fn:()=>{log("今の会社に残った。社長に話したら、少し給料が上がった。","dec");S.inc+=15}}],"転職");return}
+  if(J.tier==="big"&&!S.flags.offer&&y>=4&&a<55&&r>=.12&&r<.2){S.flags.offer=1;decide("中小企業の社長から「うちの技術部長に来ないか」と誘われた。",[{l:"移る",s:"裁量は大きく、年収は少し下がる",fn:()=>{switchJob("small",pick(SMALLCO[S.dc]),.98);S.job.title="技術部長";note("中小企業の技術部長に",.1)}},{l:"大企業に残る",s:"",fn:()=>log("大企業に残った。","dec")}],"転職");return}
+  if(!S.flags.dokuritsu&&J.tier!=="own"&&y>=5&&a<55&&r>.975){decide("独立して自分の会社を作るか、考えている。",[{l:"起業する（−300万円）",cost:300,s:"失敗すれば貯金がなくなる",fn:()=>startup(.3)},{l:"まだ早い",s:"",fn:()=>{S.flags.dokuritsu=1;log("今はまだ早いと思った。","dec")}}],"岐路");return}
+  if(!S.married&&a>=24&&a<50&&R()<(S.partner?.3:.08)*fm){decide(S.partner?"付き合っている人と、結婚の話が出た。":"知人の紹介で出会った人と、真剣に付き合っている。結婚する？",[{l:"結婚する（式の費用 −150万円）",cost:150,s:"",fn:()=>{S.married=true;S.partner=true;log(`${a}歳で結婚した。`,"big");add("joy",12)}},{l:"式は挙げずに入籍する",s:"",fn:()=>{S.married=true;S.partner=true;log(`${a}歳で入籍した。`,"big");add("joy",10)}},{l:"まだしない",s:"",fn:()=>log("結婚はまだ先にした。","dec")}],"人生");return}
+  if(S.married&&!S.flags.house&&a>=30&&a<50&&r>=.2&&r<.3){S.flags.house=1;decide("家を買うか迷っている。頭金が必要。",[{l:"一戸建てを買う（頭金 −500万円）",cost:500,s:"自分の家",fn:()=>{S.flags.home=1;log("郊外に一戸建てを買った。設計図を見て、梁の寸法を確認した。","big");add("joy",6)}},{l:"賃貸のまま",s:"",fn:()=>log("賃貸のままにした。","dec")}],"お金");return}
+  if(a>=45&&a<62&&!S.flags.kaigo&&r>=.3&&r<.36){S.flags.kaigo=1;decide("親の介護が必要になった。",[{l:"介護休業を取って実家へ",s:"仕事は遅れる",fn:()=>{log("介護休業を取り、実家に通った。","dec");add("rel",5);add("joy",-6);S.inc=Math.round(S.inc*.95)}},{l:"施設を探す（−200万円）",cost:200,s:"週末に会いに行く",fn:()=>{log("施設に入ってもらい、毎週末会いに行った。","dec");add("joy",-3)}}],"家族");return}
+  if(S.kids&&!S.flags.kidk&&a>=42&&a<56&&r>=.36&&r<.45){S.flags.kidk=1;decide("中3の子どもが「高専に行きたい」と言っている。",[{l:"全力で応援する",s:"",fn:()=>{if(R()<.6){log("子どもが高専に合格した。親子二代の高専生になった。","big");note("親子二代で高専",.15);add("joy",10)}else log("子どもは高専に落ち、地元の高校に進んだ。","red")}},{l:"大学のほうがいいと言う",s:"",fn:()=>{log("普通科の高校を勧めた。子どもは少し不満そうだった。","dec");add("rel",-3)}}],"家族");return}
+  if(a<58&&R()<.13){const pool=MID.filter(m=>!S.flags["m_"+m.id]&&m.ok(a));if(pool.length){const m=pick(pool);S.flags["m_"+m.id]=1;decide(typeof m.q==="function"?m.q():m.q,m.opts(a),"転機");return}}
+  if(S.married&&S.kids<3&&a<45&&R()<.15*fm){S.kids++;log(S.kids===1?"子どもが生まれた。":`${S.kids}人目の子どもが生まれた。`,"big");add("joy",8);add("hp",-3)}
+  if(S.kids)S.assets-=S.kids*20;
+  if(al.hobby>=3&&R()<.12)log(pick(["週末、趣味の旋盤を自宅のガレージに置いた。","ロードバイクで琵琶湖を一周した。","趣味で作ったアプリが、少しだけ売れた。","アマチュア無線で、海外の人と交信した。"]));
+  if(R()<.07)log(flav(["母校の高専で、後輩向けに講演をした。","高専の同期会。半分が転職していた。","技術士の一次試験に合格した。","電験三種に合格した。","健康診断で再検査になった。何もなかった。","寮で同部屋だったやつから、久しぶりに電話が来た。"]));
+}
+const MID=[
+  {id:"side",ok:a=>a<45,q:"週末に副業でアプリやツールを作らないかと、高専の同期に誘われた。",opts:()=>[
+    {l:"やる",s:"技術とお金。うまくいけば",fn:()=>{add("tech",4);if(R()<.3+S.tech/300){S.assets+=150;log("副業で作ったツールが企業に売れた。","big");note("副業のツールが売れた",.08)}else{log("副業は半年で自然消滅した。","dec");add("joy",-2)}}},
+    {l:"本業に集中する",s:"",fn:()=>{S.inc+=10;log("本業に集中した。","dec")}}]},
+  {id:"gs",ok:a=>a<48&&S.edu!=="海外大学",q:"会社の制度で、働きながら大学院に通えるらしい。",opts:()=>[
+    {l:"社会人大学院に通う（−200万円）",cost:200,s:"知識と昇進。体力は削られる",fn:()=>{add("know",8);add("hp",-6);S.inc+=40;S.flags.gs=1;log("仕事のあと夜間の大学院に通い、修士号を取った。","big");note("社会人で修士号を取得",.04)}},
+    {l:"やめておく",s:"",fn:()=>log("大学院はあきらめた。","dec")}]},
+  {id:"pe",ok:a=>a>=28&&a<55,q:"技術士の二次試験。合格率はかなり低い。",opts:()=>[
+    {l:"本気で受ける（−5万円）",cost:5,s:"知識しだい。受かれば年収と肩書き",fn:()=>{if(R()<.15+S.st.know/250){S.inc+=40;log("技術士に合格した。名刺に「技術士」と入った。","big");note("技術士に合格",.05)}else{log("技術士の二次試験は不合格だった。","red");add("joy",-3)}}},
+    {l:"今年は見送る",s:"",fn:()=>log("今年は見送った。","dec")}]},
+  {id:"uturn",ok:a=>a>=27&&a<50&&S.job.tier!=="f1",q:()=>`地元の${full(S.pref)}にある会社から、Uターン転職の誘いが来た。`,opts:()=>[
+    {l:"地元に戻る",s:"年収は下がるが、家族と近くなる",fn:()=>{switchJob("small",`${full(S.pref)}の${pick(SMALLCO[S.dc]).replace(/^地元の/,"")}`,.95);add("joy",6);add("rel",6);log(`${full(S.pref)}に戻った。`,"dec")}},
+    {l:"今の場所に残る",s:"",fn:()=>log("今の場所に残った。","dec")}]},
+  {id:"invest",ok:a=>S.assets>=200,q:"貯金がたまってきた。どう運用する？",opts:()=>[
+    {l:"インデックス投資にまとめて入れる",s:"長い目で見れば増えやすい",fn:()=>{const r=.85+R()*.7;S.assets=Math.round(S.assets*r);log(r>=1?`投資の評価額が${Math.round((r-1)*100)}%増えた。`:`相場が下がり、評価額が${Math.round((1-r)*100)}%減った。`,r>=1?"dec":"red")}},
+    {l:"話題の暗号資産に全部入れる",s:"大当たりか、大外れ",fn:()=>{if(R()<.15){S.assets*=4;log("暗号資産が4倍になった。","big");note("暗号資産で資産4倍",.03)}else{S.assets=Math.round(S.assets*.3);log("暗号資産が暴落した。7割が消えた。","red");add("joy",-10)}}},
+    {l:"預金のまま",s:"",fn:()=>log("預金のままにした。","dec")}]},
+  {id:"vol",ok:a=>a>=30,q:"地域の子ども向けロボット教室で、ボランティアの講師を探しているらしい。",opts:()=>[
+    {l:"手伝う",s:"人間関係と幸福",fn:()=>{add("rel",6);add("joy",5);log("月に一度、子どもたちにはんだ付けを教えた。","dec")}},
+    {l:"忙しいので断る",s:"",fn:()=>log("忙しくて断った。","dec")}]},
+  {id:"burn",ok:a=>S.alloc.job>=6,q:"働きすぎて、朝起きるのがつらくなってきた。",opts:()=>[
+    {l:"半年休職する",s:"年収は下がるが、健康は戻る",fn:()=>{add("hp",15);add("joy",10);S.inc=Math.round(S.inc*.9);log("半年休職した。散歩の距離が少しずつ伸びた。","dec")}},
+    {l:"このまま走り続ける",s:"健康が大きく下がる",fn:()=>{add("hp",-15);S.inc+=20;log("走り続けた。","red")}}]}
+];
+function retire(){S.retired=true;S.flags.teinen=1;S.flags.lifelong=0;const yrs=Math.max(1,S.age-(S.job?.start||20));S.inc=clamp(Math.round(60+S.life/yrs*.22),80,260);S.assets+=Math.round(S.life*.05);log(`${S.age}歳で仕事を引退した。年金は年に約${S.inc}万円。`,"big")}
+function oldYear(){
+  const a=S.age,al=S.alloc;if(R()<.0004){log("年末ジャンボ宝くじが1等に当たった。","big");urNote("lotto","宝くじ1等");S.assets+=70000}S.assets+=Math.round(S.inc*.1-al.hobby*10);
+  if(S.kids&&!S.grand&&a>=55&&R()<.15*(.5+al.family*.3)){S.grand=1;log("孫が生まれた。","big");add("joy",10)}
+  else if(R()<.45)log(flav(["地域の子ども向けものづくり教室を手伝った。","高専の同期会。今年は欠席が増えた。","庭で家庭菜園を始めた。","昔の設計図を整理していたら、若いころの字が出てきた。",S.married?"配偶者と温泉旅行に行った。":"一人で温泉旅行に行った。","母校の高専の創立記念式典に招かれた。","病院の定期検診が月1回になった。","近所の自転車を直してあげたら、評判になった。","ロボコンの全国大会をテレビで見た。今の学生のロボットは、すごい。","孫に、はんだごての使い方を教えた。","朝の散歩が日課になった。"]));
+  if(!S.flags.oldrobo&&a>=66&&a<80&&R()<.08){S.flags.oldrobo=1;decide("地元の小学校から、ロボット教室の先生を頼まれた。",[{l:"引き受ける",s:"",fn:()=>{log("毎週土曜、小学生にロボットの作り方を教えた。","big");note("引退後にロボット教室の先生",.15);add("joy",8);add("rel",6)}},{l:"断る",s:"",fn:()=>log("体力に自信がなく、断った。","dec")}],"人生");return}
+  if(S.married&&!S.flags.widow&&a>=70&&R()<.04){S.flags.widow=1;log("長年連れ添った配偶者が亡くなった。","red");add("joy",-15);add("rel",-5)}
+  if(a===100){log("100歳の誕生日。市長から祝い状が届いた。","big");note("100歳を迎えた",.015)}
+}
+function switchJob(tier,co,p,k="know"){const keepInd=S.job&&S.job.ind;
+  const pp=clamp(p+((k==="tech"?S.tech:S.st.know)-55)/150,.05,.98);
+  if(R()<pp){const old=S.inc;S.job={tier,co,role:S.job?.role||pick(ROLE[S.dc]),title:"",start:S.age,ind:tier==="small"||tier==="big"?null:keepInd};S.inc=Math.max(BASE[tier],Math.round(old*(tier==="big"?1.15:tier==="small"?.92:1.05)));log(`${co}に転職した。`,"big")}
+  else log(`${co}の選考は不合格だった。`,"red");
+}
+function startup(p){
+  S.flags.dokuritsu=1;log("会社を辞めて、自分の会社を登記した。","big");
+  if(R()<p+S.tech/500){S.job={tier:"own",co:"自分の会社",role:"代表取締役",title:"社長",start:S.age};S.inc=Math.round(S.inc*1.4);note("起業して軌道に乗せた",.08);log("3年目で黒字化。社員を5人雇った。","big");add("joy",10)}
+  else{log("2年で資金が尽き、会社を畳んだ。","red");S.assets=Math.round(S.assets*.2);S.job={tier:"small",co:pick(SMALLCO[S.dc]),role:S.job?.role||pick(ROLE[S.dc]),title:"",start:S.age};S.inc=BASE.small+40;add("joy",-15)}
+}
+
+// ===================== 進行 =====================
+function step(){
+  if(S.done||S.pending)return;
+  const prev=S.log.length;
+  applyAlloc();
+  if(S.phase==="chu"){const k=`${S.year}${S.sem}`;CHU[k]&&CHU[k]();chuTest();if(S.flags.juku===1)S.assets-=3}
+  else if(S.phase==="kosen"){
+    if(S.abroadSems>0){S.abroadSems--;S.abroadNow=true;add("eng",14);add("rel",3);add("joy",3);
+      log(pick([`${S.country}のホストファミリーの家で、毎晩夕食のときに英語で一日を話した。`,`${S.country}の高校で、物理の授業だけは誰よりも速く解けた。`,`${S.country}の友だちと、週末に湖までドライブした。`,"留学先の授業の単位を、成績証明書にまとめて日本に送った。"]));
+      if(S.abroadSems===0)log(`${S.country}から帰国した。向こうで取った単位は、まとめて認定された。`,"big");
+      pushMap(prev);inAdv=true;advance();inAdv=false;return}
+    S.abroadNow=false;
+    if(S.kyugaku){S.kyugaku=false;log("半年間の休学を終えて、同じ学期から復学した。","dec");add("joy",10);pushMap(prev);return}
+    const k=`${S.year}${S.sem}`;if(KOSEN[k]&&!S.seen[k]){S.seen[k]=1;KOSEN[k]()}else if(KOSEN[k])log(`2回目の${S.year}年${S.sem?"後期":"前期"}。後輩だった人たちと同じ教室にいる。`);
+    kosenRandom();
+  }else if(S.phase==="hs"){log(pick(["高校の物理の授業で、ふと高専のことを思い出した。","高校の文化祭。普通の青春だった。","大学受験の模試を受けた。","部活と勉強の両立に追われた。"]))}
+  else if(S.phase==="abroad")abroadYear();
+  else if(S.phase==="univ"||S.phase==="senkou"){
+    if(S.edu==="博士")log(pick(["国際学会で、英語で発表した。質疑で手が震えた。","論文が査読で2回差し戻された。","研究室の後輩の実験を見ながら、自分の実験は夜にやった。","学振の特別研究員に採用された。"]));else
+    log(S.phase==="univ"?pick([`${S.dest}の研究室に配属された。大学から入った同期は、旋盤を触ったことがなかった。`,"大学のサークルに入ってみた。高専の話をすると珍しがられた。","大学院の入試を受けて合格した。","TA（ティーチング・アシスタント）として実験を教えた。"]):pick(["専攻科で学会発表をした。","専攻科の特別研究で、企業と共同研究をした。","学位授与機構への論文審査を通った。"]));
+  }else workYear();
+  pushMap(prev);
+  if(!S.pending){inAdv=true;advance();inAdv=false}
+}
+function chuTest(){if(R()<.6){S.hv=clamp(S.hv+gauss()*1.5+(S.flags.juku?.8:0)+(S.st.know-50)/40,25,78);log(`定期テスト。学年${rank()}位。`)}}
+function pushMap(prev){S.joySum+=S.st.joy;S.joyN++;const evs=S.log.slice(prev);S.map.push({j:S.st.joy,r:evs.some(e=>/red/.test(e.cls)),b:evs.some(e=>/big/.test(e.cls)),ph:S.retired?"old":S.phase,age:S.age})}
+function advance(){
+  if(S.done)return;
+  const ph=S.phase;
+  if(ph==="chu"){if(S.sem===0){S.sem=1;S.age++;return}if(S.year===3){if(S.flags.enter){S.phase="kosen";S.year=1;S.sem=0;S.age=15}return}S.year++;S.sem=0;return}
+  if(ph==="kosen"){
+    if(!S.abroadNow)testK();add("joy",gauss()*3);
+    if(S.st.joy<8&&R()<.2){S.kyugaku=true;log("心身の調子を崩し、次の学期を休学することにした。","red");note("休学を経験",.03);S.st.joy=55}
+    if(S.sem===1){
+      if(S.lost>=3){S.ryunen++;
+        if(S.ryunen>=2){log("二度目の原級留置。規定により、高専を去ることになった。","red");note("2度留年して退学",.012);dropout();return}
+        log(`不認定科目が${S.lost}つ。進級判定会議の結果、${S.year}年生をもう一度やることになった。`,"red");note("留年を経験",.06);add("joy",-15);S.lost=0;S.sem=0;return}
+      if(S.lost===2)log("不認定科目が2つ。ぎりぎりで仮進級。担任から呼び出された。","red");
+      S.lost=0;if(S.year===5){graduate();return}S.year++;S.sem=0;
+    }else{S.sem=1;S.age++}
+    return}
+  if(ph==="hs"){S.age++;S.year++;if(S.year>=3){log("高校を卒業した。","big");
+      if(R()<.55){S.phase="univ";S.univLen=4;S.year=0;S.edu="大学";S.dest="地元の大学の工学部";log("地元の大学の工学部に進んだ。")}else{S.edu="高校";S.phase="pre";jobHunt(false)}}return}
+  if(ph==="abroad"){S.age++;S.year++;
+    if(S.year>=S.univLen){log(`${S.age}歳、${S.dest}を卒業し、${S.degree}を取得した。`,"big");S.phase="pre";jobHunt(false)}return}
+  if(ph==="univ"||ph==="senkou"){S.age++;S.year++;
+    if(S.year>=S.univLen){log(ph==="univ"?(S.edu==="博士"?`${S.age}歳、博士（工学）の学位を取った。`:`${S.age}歳、${S.dest}を卒業した。`):`${S.age}歳、専攻科を修了し、学士（工学）を取得した。`,"big");S.phase="pre";jobHunt(false)}return}
+  if(ph==="pre"){S.phase="work";return}
+  S.age++;
+  add("hp",(S.age>=80?-2.2:S.age>=70?-1.5:S.age>=50?-.8:0)+gauss()*1.2);
+  if(S.flags.loan&&S.age<=35)S.assets-=12;
+  const q=Math.exp((S.fem?-11.4:-10.7)+.095*S.age)*Math.exp((55-S.st.hp)/35);
+  if(R()<q)die();
+}
+function dropout(){S.edu="高専中退";S.phase="pre";
+  decide(`${S.age}歳。高専を去ることになった。これからどうする？`,[
+    {l:"地元の工場で働く",s:"高専で覚えた技術は使える",fn:()=>{S.job={tier:"small",co:pick(SMALLCO[S.dc]),role:"現場作業",title:"",start:S.age};S.inc=230;log(`${S.job.co}で働き始めた。`,"dec")}},
+    {l:"高卒認定を取って大学へ",s:"遠回りでも学び直す",fn:()=>{S.phase="univ";S.univLen=4;S.year=0;S.edu="大学";S.dest="地方の私立大学の工学部";log("高卒認定を取り、大学に入り直した。","dec");note("高専中退から大学へ",.3)}}],"岐路");
+}
+function graduate(){
+  log(`${S.age}歳の春、${S.school}を卒業した。準学士（工学）。`,"big");
+  if(S.reds===0)note("5年間一度も赤点なし",.02);
+  if(S.path==="job"){S.edu="高専";S.phase="work";if(S.job)S.job.start=S.age}
+  else if(S.path==="abroad"&&S.abroadPlan){S.phase="abroad";S.edu="海外大学";S.year=0}
+  else{S.phase=S.path==="hennyu"?"univ":"senkou";S.edu=S.path==="hennyu"?"大学":"専攻科";S.univLen=2;S.year=0}
+}
+function die(){
+  const a=S.age;S.cause=a<50?pick(["交通事故","がん","心疾患"]):a<78?pick(["がん","がん","心疾患","脳卒中"]):pick(["老衰","老衰","肺炎","がん","心疾患"]);
+  log(`${a}歳、${S.cause}で亡くなった。`,"red big");S.done=true;S.end="dead";stop();S.queue=[];S.pending=null;
+  decide(`${a}歳。最期に思い出したのは？`,[{l:"高専の友だち",s:"",fn:()=>{S.last="高専の友だち"}},{l:"はじめて動いたロボット",s:"",fn:()=>{S.last="はじめて動いたロボット"}},{l:"あの寮の夜",s:"",fn:()=>{S.last="あの寮の夜"}},{l:"家族の顔",s:"",fn:()=>{S.last="家族の顔"}},{l:"選ばなかった道",s:"",fn:()=>{S.last="選ばなかった道"}}],"最期");
+}
+function choose(o){
+  if(o.cost&&S.assets<o.cost)return;
+  const na=S.pending.noAdv;S.pending=null;if(o.cost)S.assets-=o.cost;o.fn();
+  if(!S.pending&&S.queue.length)S.pending=S.queue.shift();
+  if(S.done){render();return}
+  if(!S.pending&&!na){inAdv=true;advance();inAdv=false}
+  if(S.phase==="pre"&&!S.pending)S.phase="work";
+  syncAlloc();render()}
+const affordable=o=>!o.locked&&!(o.cost&&S.assets<o.cost);
+
+// ===================== 自動再生 =====================
+let timer=null,speed=2,playing=false,omakase=false;
+function tick(){
+  if(!S){stop();return}
+  if(S.pending){if(omakase){const ok=S.pending.opts.filter(affordable),safe=ok.filter(o=>/[ABC]/.test(o.jd||"A"));choose(pick(S.pending.list&&safe.length?safe:ok))}else{stop();render()}return}
+  if(S.done){stop();render();return}
+  step();render();
+}
+function play(){if(!S||S.done&&!S.pending)return;playing=true;clearInterval(timer);timer=setInterval(tick,1200/speed);render()}
+function stop(){playing=false;clearInterval(timer);timer=null}
+function untilDecision(){let g=0;while(S&&!S.pending&&!S.done&&g++<120)step();render()}
+
+// ===================== 実績・チャレンジ・スコア =====================
+const store={get(k,d){try{const v=localStorage.getItem("k1man_"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("k1man_"+k,JSON.stringify(v))}catch(e){}}};
+const has=re=>S.notable.some(n=>re.test(n.t));
+const ACH=[
+  ["first","はじめての一生","人生を一度最後まで生きた",()=>true],
+  ["kosen","高専生","高専に入学した",()=>!!S.school],
+  ["nokosen","もうひとつの世界線","高専に行かずに一生を終えた",()=>!S.school],
+  ["pub","ふるさとの公立高専","生まれた地の公立高専に入学した",()=>has(/公立高専/)],
+  ["gyakuten","逆転合格","判定D以下から合格した",()=>has(/逆転合格/)],
+  ["noRed","赤点ゼロ","5年間一度も赤点を取らなかった",()=>has(/赤点なし/)],
+  ["ryunen","2回目の1年","留年を経験した",()=>S.ryunen>0],
+  ["robozen","両国国技館","ロボコン全国大会に出た",()=>has(/ロボコン全国大会/)],
+  ["robowin","高専ロボコンの頂点","ロボコン全国優勝",()=>has(/ロボコン全国優勝/)],
+  ["meibutsu","名物部活の星","名物部活で大きな結果を残した",()=>!!S.flags.spbig],
+  ["bucho","部長","部活の部長を務めた",()=>!!S.flags.bucho],
+  ["love","高専の恋","高専で恋人ができた",()=>has(/恋人/)],
+  ["akashi","休学しない留学","明石高専の長期留学制度で留学した",()=>!!S.flags.ryugaku],
+  ["qut","ブリスベンへ","クイーンズランド工科大学に編入した",()=>S.dest==="クイーンズランド工科大学"],
+  ["todai","赤門","東京大学に編入した",()=>S.dest==="東京大学"],
+  ["kyudai","旧帝大へ","旧帝大のどこかに編入した",()=>/東京大学|京都大学|大阪大学|東北大学|名古屋大学|九州大学|北海道大学/.test(S.dest||"")],
+  ["soton","サウサンプトン","サウサンプトン大学に入学した",()=>S.dest==="サウサンプトン大学"],
+  ["f1","F1の世界へ","F1チームに就職した",()=>has(/F1チームに就職/)],
+  ["f1win","グランプリ優勝","担当マシンがグランプリで優勝した",()=>!!S.flags.f1win],
+  ["td","テクニカルディレクター","F1チームのテクニカルディレクターになった",()=>has(/テクニカルディレクター/)],
+  ["bucho2","高専卒の部長","大企業の部長になった",()=>has(/大企業の部長/)],
+  ["yakuin","役員室","中小企業の役員になった",()=>has(/役員/)],
+  ["ceo","社長","起業して軌道に乗せた",()=>has(/起業して軌道/)],
+  ["ipo","上場の鐘","勤め先が上場した",()=>!!S.flags.ipo],
+  ["tousan","最後の朝礼","勤め先の倒産を経験した",()=>has(/倒産/)],
+  ["dream","夢の業界","夢に決めた業界で働いた",()=>!!S.dream&&(S.jobInds||[]).includes(S.dream)],
+  ["mydream","自分で書いた夢","自分で書いた夢の業界で働いた",()=>!!S.dreamText&&(S.jobInds||[]).includes(S.dream)],
+  ["oyako","親子二代","子どもも高専生になった",()=>has(/親子二代/)],
+  ["kids3","にぎやかな食卓","子どもが3人生まれた",()=>S.kids>=3],
+  ["rich","生涯年収3億円","生涯年収が3億円を超えた",()=>S.life>=30000],
+  ["c100","100歳","100歳まで生きた",()=>S.age>=100],
+  ["sr","SR","SR以上の人生を送った",()=>["SR","SSR","UR"].includes(rarity().rk)],
+  ["ssr","SSR","SSR以上の人生を送った",()=>["SSR","UR"].includes(rarity().rk)],
+  ["ur","1万分の1","URの人生を送った",()=>rarity().rk==="UR"]
+];
+const CHAL=[
+  ["f1","F1エンジニアになれ","F1チームに就職する。夢・英語・技術がそろわないと道は開かない",()=>has(/F1チームに就職/)],
+  ["todai","東大に編入せよ","高専から東京大学に3年次編入する",()=>S.dest==="東京大学"],
+  ["robo","ロボコンの頂点へ","ロボコン全国大会で優勝する",()=>has(/ロボコン全国優勝/)],
+  ["pub","ふるさとの高専","生まれた地の公立高専に入学する（東京・大阪・兵庫生まれが必要）",()=>has(/公立高専/)],
+  ["comeback","留年からの逆転","留年を経験したうえで、大企業の部長か役員になる",()=>S.ryunen>0&&has(/部長|役員|テクニカル/)],
+  ["dream","夢をかなえろ","自分で選んだ夢の業界で働く",()=>!!S.dream&&(S.jobInds||[]).includes(S.dream)],
+  ["rich","3億円の一生","生涯年収3億円を超える",()=>S.life>=30000],
+  ["c100","100歳の高専生","100歳まで生きる",()=>S.age>=100],
+  ["ur","1万分の1","URの人生を送る",()=>rarity().rk==="UR"]
+];
+function lifeScore(){const r=rarity();const rare=Math.round(Math.max(0,4-Math.log10(Math.max(r.n,.001)))*1500);const joy=Math.round((S.joySum/Math.max(1,S.joyN))*30);const money=Math.round(S.life/20);const age=S.age*15;return{rare,joy,money,age,total:rare+joy+money+age}}
+function settle(){
+  if(S.settled)return;S.settled=true;
+  const got=store.get("ach",{}),newA=[];ACH.forEach(([id,n,d,f])=>{let ok=false;try{ok=f()}catch(e){}if(ok&&!got[id]){got[id]=1;newA.push(id)}});store.set("ach",got);S.newAch=newA;
+  if(S.chal){const c=CHAL.find(c=>c[0]===S.chal);let ok=false;try{ok=c[3]()}catch(e){}S.chalOK=ok;if(ok){const cl=store.get("chal",{});cl[S.chal]=1;store.set("chal",cl)}}
+  const sc=lifeScore();S.score=sc;const best=store.get("best",0);S.newBest=sc.total>best;if(S.newBest)store.set("best",sc.total);
+  const hist=store.get("hist",[]);hist.unshift({t:lifeTitle(),rk:rarity().rk,n:rarity().n,sc:sc.total,age:S.age,pref:S.pref,school:S.school||"",seed:S.seed});store.set("hist",hist.slice(0,12));
+  store.set("plays",store.get("plays",0)+1);
+  const urg=store.get("ur",{}),newU=[];(S.ur||[]).forEach(id=>{if(!urg[id]){urg[id]=1;newU.push(id)}});store.set("ur",urg);S.newUr=newU;
+}
+
+// ===================== 結果 =====================
+function topN(){return S.notable.slice().sort((a,b)=>a.p-b.p).slice(0,2)}
+function rarity(){let p=1;topN().forEach(n=>p*=n.p);const n=10000*p;return{n,rk:n<1?"UR":n<8?"SSR":n<40?"SR":n<200?"R":"N"}}
+function fmtN(n){if(n<1)return"1人もいない";if(n<10)return`約${n.toFixed(1)}人`;return`約${Math.round(n).toLocaleString()}人`}
+function lifeTitle(){
+  const J=S.retired&&S.best?S.best:S.job;
+  if(J){const co=J.co.replace(/（.*）/,"");const ttl=J.title&&!["嘱託","顧問"].includes(J.title)?J.title:"";
+    return S.retired?`元・${co}の${ttl||J.role}`:`${co}の${ttl?ttl+"・":""}${J.role}`}
+  return S.school?`${S.school}の卒業生`:"高専に行かなかった人";
+}
+function eduLabel(){return S.edu==="海外大学"?`${S.dest} ${S.degree}`:S.edu==="大学"?`${S.dest}卒`:S.edu==="専攻科"?"高専専攻科修了（学士）":S.edu==="高専"?"高専卒（準学士）":S.edu==="高専中退"?"高専中退":S.edu==="高校"?"高校卒":S.edu}
+function epilogue(){
+  const t=[];
+  if(!S.school)t.push("高専には行かなかった。テレビで高専ロボコンを見ると、少しだけチャンネルを止めた。");
+  else t.push(`${S.school} ${deptName()}${S.clubName&&S.club!=="none"?`、${S.clubName}${S.flags.bucho?"の部長":""}`:""}。`);
+  if(S.dream){const got=(S.jobInds||[]).includes(S.dream);t.push(`将来の夢は「${dreamName()}」。${got?"その夢の業界で働いた。":"夢とは別の道を歩いた。"}`)}
+  if(S.job)t.push(`最後の肩書きは${lifeTitle()}。生涯年収は約${(S.life/10000).toFixed(2)}億円。`);
+  t.push(S.married?`家族は${S.flags.widow?"先立った配偶者":"配偶者"}${S.kids?`と子ども${S.kids}人`:""}${S.grand?"、それに孫":""}。`:"結婚はしなかった。");
+  t.push(`${S.age}歳、${S.cause}で亡くなった。`);
+  if(S.last)t.push(`最期に思い出したのは、${S.last}。`);
+  return t;
+}
+
+// ===================== 描画 =====================
+const app=document.getElementById("app");
+const STAT=[["hp","健康","--c-hp"],["joy","幸福","--c-joy"],["know","知識","--c-know"],["rel","人間関係","--c-rel"]];
+function startHTML(){
+  const o=(k,v,b,s)=>`<button class="opt" data-k="${k}" data-v="${v}" aria-pressed="${setup[k]==v}"><b>${b}</b><small>${s}</small></button>`;
+  return`<section class="card hero">
+    <span class="label">高専 人生シミュレーション</span>
+    <h1>1万分の1<small>高専に入る、毎年およそ1万人のうちのひとり</small></h1>
+    <p class="lead">どの県に、どんな家に生まれるかは選べない。中学で偏差値を上げ、全国58高専の実在の学科から受験先を選ぶ。公立高専は、その土地に生まれた人しか受けられない。勉強・部活・バイト・遊び・休養に力を配分し、部活にはお金もかかる。大企業か、中小か。最期の日まで生きたら、同じ人生を送る人が1万人中何人いるかが分かる。</p>
+  </section>
+  <section class="card qblock"><span class="label">生まれる場所の決め方</span><div class="opts">
+    ${o("birth","babies","いま生まれている赤ちゃん","都道府県別の出生数で決まる。東京・大阪・神奈川が多い")}
+    ${o("birth","any","どの県でも同じ確率","47都道府県から等しく選ばれる")}</div></section>
+  <section class="card qblock"><span class="label">チャレンジ（任意）</span><div class="opts">
+    ${[[null,"なし","自由に生きる"],...CHAL.map(c=>[c[0],c[1],c[2]])].map(([id,n,d])=>{const cl=id&&store.get("chal",{})[id];return`<button class="opt" data-k="chal" data-v="${id||""}" aria-pressed="${(setup.chal||"")===(id||"")}"><b>${cl?"✓ ":""}${n}</b><small>${d}</small></button>`}).join("")}</div></section>
+  <section class="card qblock"><span class="label">人生の種（任意）</span><p class="small muted">友だちの結果に書いてある種を入れると、同じ県・同じ家に生まれる。その先は選択しだい。</p>
+    <div class="dform"><input id="seedin" type="text" inputmode="numeric" maxlength="9" placeholder="空欄ならランダム" value="${esc(setup.seed)}"></div></section>
+  <button class="btn big" id="go">生まれる</button>
+  ${howHTML()}
+  ${urHTML()}
+  ${recordsHTML()}
+  ${srcHTML()}`}
+function howHTML(){return`<section class="card qblock"><span class="label">遊び方</span><ol class="how">
+  <li><b>生まれる</b>県と家は運で決まる。中学では「力の配分」で勉強と遊びのバランスを決める。</li>
+  <li><b>高専を選ぶ</b>中3の冬、58校を偏差値順に見て受験先を決める。判定A〜Eつき。</li>
+  <li><b>5年間を生きる</b>赤点、部活の予算、コース選択、留学、恋。将来の夢もいつでも決められる。</li>
+  <li><b>最期まで</b>就職から定年、老後まで。「▶ 再生」で自動で進み、決断のときだけ止まる。</li></ol>
+  <p class="small muted">同じ人生を送る人が1万人中何人かで、N・R・SR・SSR・URのランクがつく。1人を切れば、本物の1万分の1。</p></section>`}
+function urHTML(){const ug=store.get("ur",{});return`<section class="card qblock urbox"><div class="alloc-head"><span class="label">UR人生図鑑</span><span class="small muted">${Object.keys(ug).length} / ${URS.length}</span></div>
+  <div class="achs">${URS.map(([id,n,h])=>`<div class="ach ur ${ug[id]?"on":""}"><b>${ug[id]?esc(n):"？？？"}</b><small>${esc(h)}</small></div>`).join("")}</div></section>`}
+function recordsHTML(){
+  const got=store.get("ach",{}),hist=store.get("hist",[]),best=store.get("best",0),plays=store.get("plays",0);
+  const n=Object.keys(got).length;
+  return`<section class="card qblock"><div class="alloc-head"><span class="label">実績図鑑</span><span class="small muted">${n} / ${ACH.length}　・　これまで${plays}回の人生　・　最高スコア <b class="num">${best.toLocaleString()}</b></span></div>
+  <div class="achs">${ACH.map(([id,nm,d])=>`<div class="ach ${got[id]?"on":""}" title="${esc(d)}"><b>${got[id]?esc(nm):"？？？"}</b><small>${got[id]?esc(d):esc(d)}</small></div>`).join("")}</div>
+  ${hist.length?`<span class="label" style="margin-top:6px">これまでの人生</span><ul class="km">${hist.map(h=>`<li><span class="num">${h.rk}</span><span>${esc(h.t)}<br><small class="muted">${full(h.pref)}生まれ・${esc(h.school||"高専に行かず")}・${h.age}歳　種 ${h.seed}</small></span><span class="p">${h.sc.toLocaleString()}</span></li>`).join("")}</ul>`:""}</section>`}
+function allocHTML(){
+  syncAlloc();const D=ALLOC[S.allocK],left=D.total-used();
+  return`<div class="alloc"><div class="alloc-head"><span class="label">力の配分</span><span class="small muted">残り <b class="num">${left}</b> / ${D.total}</span></div><div class="alloc-grid">${D.keys.map(([k,n])=>{const dis=k==="club"&&S.club==="none";
+    return`<div class="al ${dis?"off":""}"><span>${n}</span><div class="dots">${Array.from({length:D.total},(_,i)=>`<i class="${i<S.alloc[k]?"on":""}"></i>`).join("")}</div><div class="pm"><button data-ak="${k}" data-d="-1" ${S.alloc[k]<=0||dis?"disabled":""} aria-label="${n}を減らす">−</button><b class="num">${S.alloc[k]}</b><button data-ak="${k}" data-d="1" ${left<=0||dis?"disabled":""} aria-label="${n}を増やす">＋</button></div></div>`}).join("")}</div></div>`}
+function render(){
+  if(!S){app.innerHTML=startHTML();
+    app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{setup.seed=document.getElementById("seedin").value.replace(/\D/g,"");setup[b.dataset.k]=b.dataset.v||null;render()});
+    document.getElementById("go").onclick=()=>{setup.seed=document.getElementById("seedin").value.replace(/\D/g,"");S=newLife();syncAlloc();render();window.scrollTo({top:0})};return}
+  if(S.done&&!S.pending)return renderEnd();
+  const stats=STAT.map(([k,n,c])=>`<div class="stat"><span>${n}<b class="num">${Math.round(S.st[k])}</b></span><div class="bar"><i style="width:${S.st[k]}%;background:var(${c})"></i></div></div>`).join("");
+  const chips=[];
+  if(S.phase==="chu")chips.push(`偏差値 <b>${Math.round(S.hv)}</b>`);
+  if(S.phase!=="chu"||S.tech>25)chips.push(`技術 <b>${Math.round(S.tech)}</b>`);
+  chips.push(`${S.phase==="work"?"貯金":"お金"} <b>${Math.round(S.assets)}</b>万円`);
+  if(S.job&&S.phase==="work")chips.push(`${S.retired?"年金":"年収"} <b>${S.inc}</b>万円`);
+  if(S.phase==="kosen"&&S.club&&S.club!=="none")chips.push(`${S.clubName}の実力 <b>${Math.round(S.cpow)}</b>`);
+  if(S.phase!=="chu"||S.eng>45)chips.push(`英語 <b>${Math.round(S.eng)}</b>`);
+  if(S.dream)chips.push(`夢への熱量 <b>${Math.round(S.dp)}</b>`);
+  if(S.ryunen)chips.push(`留年 <b>${S.ryunen}</b>`);
+  const stage=S.phase==="chu"?`${full(S.pref)}の中学${S.year}年`:S.phase==="kosen"?`${S.school} ${deptName()} ${S.year}年${S.sem?"後期":"前期"}`:S.phase==="hs"?"地元の高校":S.phase==="abroad"?`${S.dest}（${S.country}）`:S.phase==="univ"?S.dest:S.phase==="senkou"?`${S.school} 専攻科`:S.retired?"引退後の暮らし":S.job?`${S.job.co}${S.job.title?"・"+S.job.title:""}`:"";
+  const dec=S.pending?`<section class="card decision"><span class="label">${esc(S.pending.tag)}${omakase?"（おまかせ中）":""}</span><h3>${esc(S.pending.q)}</h3><div class="choices ${S.pending.list?"scrolllist":""}">${S.pending.opts.map((o,i)=>{const poor=o.cost&&S.assets<o.cost;return`<button class="choice" data-i="${i}" ${o.locked||poor?"disabled":""}><span>${esc(o.l)}</span>${o.jd?`<span class="jd ${o.jc||""}">${o.jd}</span>`:""}${o.s||poor?`<small>${esc(poor?`お金が足りない（所持 ${Math.round(S.assets)}万円）`:o.s)}</small>`:""}</button>`}).join("")}</div></section>`:"";
+  const rows=S.log.map((e,i)=>({e,i})).reverse().slice(0,80);
+  app.innerHTML=`
+  <section class="card top">
+    <div class="agebar"><span class="age num">${S.age}<small>歳</small></span><span class="stage">${esc(stage)}</span></div>
+    <div class="stats">${stats}</div>
+    <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
+    <div class="player">
+      <button class="pbtn" id="pp" aria-pressed="${playing}">${playing?"❚❚ 停止":"▶ 再生"}</button>
+      <div class="speeds">${[1,2,4,8,16].map(v=>`<button data-s="${v}" aria-pressed="${speed===v}">${v}×</button>`).join("")}</div>
+      <button class="pbtn" id="nd" ${S.pending?"disabled":""}>次の決断まで</button>
+      <button class="pbtn" id="nx" ${S.pending?"disabled":""}>次へ</button>
+      <button class="toggle" id="om" aria-pressed="${omakase}"><i></i>おまかせ</button>
+    </div>
+  </section>
+  ${S.chal?`<p class="chalbar">チャレンジ：<b>${esc(CHAL.find(c=>c[0]===S.chal)[1])}</b></p>`:""}
+  ${!store.get("tip",0)&&S.log.length<12?`<section class="tip card"><p><b>はじめに</b>：「▶ 再生」で人生が自動で進み、決断のときに止まる。下の「力の配分」と「将来の夢」はいつでも変えられる。記録はタップで☆を付けると、最後のカードに残る。</p><button class="pbtn" id="tipx">わかった</button></section>`:""}
+  ${S.log.length<3&&!S.pending?birthHTML():""}
+  ${dec}
+  ${dreamHTML()}
+  <section class="card">${allocHTML()}<p class="small muted" style="margin-top:6px">${allocHint()}</p></section>
+  ${S.log.length>=3||S.pending?birthMini():""}
+  <section class="card"><span class="label">人生地図　1マス＝学生は半年、社会人は1年</span>${mapHTML()}</section>
+  <section class="card"><span class="label">人生の記録　タップで☆</span><div class="log">${rows.map(({e,i},k)=>`<button class="ev ${e.cls} ${e.star?"star":""} ${k<2?"new":""}" data-li="${i}"><span class="a">${e.a}<br>${e.age}歳</span><p>${e.t}</p><span class="st">★</span></button>`).join("")||'<p class="muted small">「▶ 再生」か「次へ」で人生が進む。</p>'}</div></section>`;
+  app.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{const o=S.pending.opts[+b.dataset.i];if(!affordable(o))return;choose(o)});
+  app.querySelectorAll(".speeds button").forEach(b=>b.onclick=()=>{speed=+b.dataset.s;if(playing)play();else render()});
+  app.querySelectorAll(".ev").forEach(b=>b.onclick=()=>{const e=S.log[+b.dataset.li];e.star=!e.star;b.classList.toggle("star")});
+  app.querySelectorAll(".dchip").forEach(b=>b.onclick=()=>{setDream(b.dataset.dk);log(`将来の夢を「${dreamName()}」にした。`,"dec");render()});
+  const df=document.getElementById("dform");if(df)df.onsubmit=e=>{e.preventDefault();const t=document.getElementById("dtext").value.trim();if(!t)return;setDream(dreamKeyFromText(t)||"custom",t);log(`将来の夢を「${t}」にした。`,"dec");render()};
+  app.querySelectorAll(".pm button").forEach(b=>b.onclick=()=>{const k=b.dataset.ak,d=+b.dataset.d;const D=ALLOC[S.allocK];if(d>0&&used()>=D.total)return;S.alloc[k]=Math.max(0,S.alloc[k]+d);render()});
+  document.getElementById("pp").onclick=()=>{playing?stop():play();render()};
+  document.getElementById("nd").onclick=()=>{stop();untilDecision()};
+  document.getElementById("nx").onclick=()=>{stop();step();render()};
+  const tx=document.getElementById("tipx");if(tx)tx.onclick=()=>{store.set("tip",1);render()};
+  document.getElementById("om").onclick=()=>{omakase=!omakase;render()};
+}
+function dreamHTML(){
+  const cur=S.dream;
+  return`<section class="card dream"><div class="alloc-head"><span class="label">将来の夢（いつでも変えられる）</span><span class="small muted">いまの夢：<b>${esc(dreamName())}</b></span></div>
+  <div class="dchips">${Object.entries(DREAMS).map(([k,d])=>`<button class="dchip" data-dk="${k}" aria-pressed="${cur===k}">${d.n}</button>`).join("")}</div>
+  <form class="dform" id="dform"><input id="dtext" type="text" maxlength="24" placeholder="自分で書く（例：はやぶさのような探査機をつくる）" value="${cur==="custom"?esc(S.dreamText):""}"><button class="pbtn" type="submit">夢にする</button></form>
+  <p class="small muted">${cur?"夢に近い部活・学科・進路を選ぶほど熱量が上がり、就職で夢の業界を受けやすくなる。変えると熱量は半分になる。":"夢を決めると、就職のときに夢の業界の会社が選べるようになる。"}</p></section>`}
+function allocHint(){const k=S.allocK;return{
+  chu:"勉強は偏差値、部活は健康と人間関係、遊びと休養は幸福。勉強ばかりだと幸福が下がる。",
+  kosen:"勉強は試験と知識、部活は部の実力（大会の結果）、バイトはお金、遊びは幸福と友だち、休養は健康。",
+  univ:"勉強・研究は知識と技術、バイトはお金。",
+  work:"仕事は昇進と年収、家族・恋愛は結婚や子ども、趣味は幸福（お金を使う）、健康は寿命に効く。",
+  old:"趣味は幸福、家族は孫や人間関係、健康は寿命に効く。"}[k]}
+function birthHTML(){const share=PREFS.find(p=>p[0]===S.pref)[1]/PREFS.reduce((s,p)=>s+p[1],0)*100;
+  const pub=SCHOOLS.find(s=>s[3]==="公立"&&s[1]===S.pref);
+  return`<section class="card birth">
+  <span class="label">誕生カード</span>
+  <p class="big">${full(S.pref)}に、${S.fem?"女の子":"男の子"}として生まれた。</p>
+  <dl><dt>名字</dt><dd>${S.sur}</dd><dt>家庭の収入</dt><dd>${S.wealth}</dd><dt>中学</dt><dd>${full(S.pref)}の公立中学校</dd><dt>はじめの偏差値</dt><dd class="num">${Math.round(S.hv)}</dd></dl>
+  <p class="oneof">${setup.birth==="babies"?`${full(S.pref)}で生まれるのは、全国の赤ちゃんの約${share.toFixed(1)}%。`:"47都道府県から、等しい確率で選ばれた。"}${pub?` ${full(S.pref)}生まれなので、${pub[0]}を受験できる。`:""}${NO_KOSEN.includes(S.pref)?` ${full(S.pref)}には高専がない。`:""}</p>
+</section>`}
+function birthMini(){return`<p class="small muted">${full(S.pref)}生まれ・${S.sur}${S.fem?"さん":"くん"}${S.school?`・${S.school} ${deptName()}（${S.dorm?"寮":"自宅"}）`:`・家庭の収入${S.wealth}`}</p>`}
+function mapHTML(){
+  const col={chu:"--c-hp",kosen:"--c-know",hs:"--c-rel",univ:"--c-rel",senkou:"--c-rel",abroad:"--c-rel",work:"--c-joy",pre:"--c-joy",old:"--c-old"};
+  const cells=S.map.map(c=>{const a=.25+c.j/130;return`<i class="${c.r?"r":c.b?"s":""}" style="background:color-mix(in srgb,var(${col[c.ph]}) ${Math.round(a*100)}%,var(--line))" title="${c.age}歳"></i>`}).join("");
+  return`<div class="map">${cells}</div><div class="legend"><span><i style="background:var(--c-hp)"></i>中学</span><span><i style="background:var(--c-know)"></i>高専</span><span><i style="background:var(--c-rel)"></i>高校・大学</span><span><i style="background:var(--c-joy)"></i>仕事</span><span><i style="background:var(--c-old)"></i>引退後</span><span>濃いほど幸福・赤い点はつらい年</span></div>`}
+function renderEnd(){
+  settle();const sc=S.score;
+  const r=rarity(),stars=S.log.filter(e=>e.star),top=topN();
+  const km=S.notable.length?top.concat(S.notable.filter(n=>!top.includes(n))).map(n=>`<li><span class="num">${n.age}歳</span><span>${top.includes(n)?"★ ":""}${esc(n.t)}</span><span class="p">${n.p>=.01?Math.round(n.p*100)+"%":(n.p*100).toFixed(1)+"%"}</span></li>`).join(""):`<li><span class="num">—</span><span>確率に効くような出来事はなかった。それも多数派の人生。</span><span></span></li>`;
+  app.innerHTML=`
+  <section class="share">
+    <span class="k">1万分の1 高専版 ・ ${full(S.pref)}生まれ ・ ${S.age}歳没</span>
+    <h2>${esc(lifeTitle())}</h2>
+    <div><span class="k">同じ人生を送る人は、1万人中</span><div class="n">${fmtN(r.n)}<span class="rk">${r.rk}</span></div></div>
+    <div class="row">${[S.school,S.school?deptName():"",eduLabel(),S.job?`生涯年収 ${(S.life/10000).toFixed(2)}億円`:""].filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join("")}</div>
+    <div class="candle"><i></i>${S.sur}${S.fem?"さん":"くん"}　${S.age}年の人生　・　人生の種 ${S.seed}</div>
+  </section>
+  <section class="card scorecard">
+    <div class="alloc-head"><span class="label">人生スコア${S.newBest?"　<b class=\"newb\">自己ベスト更新</b>":""}</span><b class="num big2">${sc.total.toLocaleString()}</b></div>
+    <div class="facts"><div><span>レア度</span><b class="num">${sc.rare.toLocaleString()}</b></div><div><span>幸福の平均</span><b class="num">${sc.joy.toLocaleString()}</b></div><div><span>生涯年収</span><b class="num">${sc.money.toLocaleString()}</b></div><div><span>寿命</span><b class="num">${sc.age.toLocaleString()}</b></div></div>
+    ${S.chal?`<p class="chalres ${S.chalOK?"ok":""}">チャレンジ「${esc(CHAL.find(c=>c[0]===S.chal)[1])}」：<b>${S.chalOK?"達成":"未達成"}</b></p>`:""}
+    ${S.newUr&&S.newUr.length?`<div><span class="label">UR人生を解放</span><div class="achs">${S.newUr.map(id=>{const u=URS.find(x=>x[0]===id);return`<div class="ach ur on new"><b>${esc(u[1])}</b><small>${esc(u[2])}</small></div>`}).join("")}</div></div>`:""}
+    ${S.newAch&&S.newAch.length?`<div><span class="label">新しく解放した実績</span><div class="achs">${S.newAch.map(id=>{const a=ACH.find(x=>x[0]===id);return`<div class="ach on new"><b>${esc(a[1])}</b><small>${esc(a[2])}</small></div>`}).join("")}</div></div>`:""}
+  </section>
+  <section class="card" style="display:grid;gap:14px">
+    <div class="facts">${STAT.map(([k,n])=>`<div><span>${n}</span><b class="num">${Math.round(S.st[k])}</b></div>`).join("")}<div><span>技術</span><b class="num">${Math.round(S.tech)}</b></div><div><span>遺した貯金</span><b class="num">${Math.round(Math.max(0,S.assets))}万円</b></div></div>
+    <div><span class="label">この人生を特徴づける出来事（★の2つをかけ合わせて1万人中の人数）</span><ul class="km">${km}</ul></div>
+    <div><span class="label">一生のまとめ</span><div class="epi">${epilogue().map(t=>`<p>${esc(t)}</p>`).join("")}</div></div>
+    ${stars.length?`<div><span class="label">☆をつけた記録</span><ul class="km">${stars.map(e=>`<li><span class="num">${e.age}歳</span><span>${e.t}</span><span></span></li>`).join("")}</ul></div>`:""}
+    <div><span class="label">人生地図</span>${mapHTML()}</div>
+    <details><summary>すべての記録を見る</summary><div class="log">${S.log.map(e=>`<div class="ev ${e.cls}"><span class="a">${e.a}<br>${e.age}歳</span><p>${e.t}</p><span></span></div>`).join("")}</div></details>
+    <div class="player"><button class="btn" id="again">もう一度生まれる</button><button class="btn ghost" id="same">同じ種でやり直す</button><button class="btn ghost" id="copy">結果をコピー</button><a class="btn ghost" id="post" target="_blank" rel="noopener" href="#">Xに投稿</a><button class="btn ghost" id="home">タイトルへ</button></div>
+  </section>${srcHTML()}`;
+  document.getElementById("again").onclick=()=>{setup.seed="";S=newLife();syncAlloc();render();window.scrollTo({top:0})};
+  document.getElementById("same").onclick=()=>{const sd=S.seed;S=newLife(sd);syncAlloc();render();window.scrollTo({top:0})};
+  const shareText=`【1万分の1 高専版】${full(S.pref)}生まれ・${S.age}歳没\n${lifeTitle()}\n同じ人生の人：1万人中${fmtN(r.n)}（${r.rk}）\n人生スコア ${sc.total.toLocaleString()}・人生の種 ${S.seed}\n#1万分の1高専版`;
+  document.getElementById("post").href="https://twitter.com/intent/tweet?text="+encodeURIComponent(shareText);
+  document.getElementById("home").onclick=()=>{S=null;render();window.scrollTo({top:0})};
+  const cp=document.getElementById("copy");cp.onclick=()=>{const t=shareText;
+    navigator.clipboard.writeText(t).then(()=>cp.textContent="コピーしました").catch(()=>cp.textContent="コピーできませんでした")};
+}
+function srcHTML(){return`<section class="card src"><span class="label">データについて</span>
+<p>国立51高専の学科・コースは<a href="https://www.kosen-k.go.jp/wp/wp-content/uploads/2026/07/2027KOSEN_yoko.pdf" target="_blank" rel="noopener">令和9年度 国立高専 学生募集要項</a>に、商船学科の有無は各校の情報に、公立・私立は各校の公表情報（<a href="https://www.metro-cit.ac.jp/index.html" target="_blank" rel="noopener">都立産技高専</a>、<a href="https://www.pref.osaka.lg.jp/documents/9340/08_sankousiryou1-3.pdf" target="_blank" rel="noopener">大阪府資料</a>、<a href="https://www.niad.ac.jp/storage/006/202502/no6_1_3_jiko_kindai_k_202502.pdf" target="_blank" rel="noopener">近大高専 自己評価書</a>など）に合わせた。出生地は都道府県別出生数（人口動態統計2024）、偏差値は<a href="https://jyuke-labo.com/kousen/hensachi/" target="_blank" rel="noopener">受験ラボの一覧</a>の最高値が目安。女子比率は約4分の1（<a href="https://www.kosen-k.go.jp/wp/wp-content/uploads/2026/07/R8_gakusei_table.pdf" target="_blank" rel="noopener">高専機構</a>）。各校の校風や名物部活の描写、公立高専の出生地ルール、確率、年収はゲーム上の設定。</p></section>`}
+render();
+</script>
+
+</body>
+</html>
